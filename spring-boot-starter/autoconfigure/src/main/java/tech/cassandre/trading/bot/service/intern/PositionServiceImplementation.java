@@ -1,5 +1,6 @@
 package tech.cassandre.trading.bot.service.intern;
 
+import org.springframework.stereotype.Component;
 import tech.cassandre.trading.bot.batch.PositionFlux;
 import tech.cassandre.trading.bot.domain.Position;
 import tech.cassandre.trading.bot.dto.market.Ticker;
@@ -47,6 +48,7 @@ import static tech.cassandre.trading.bot.dto.position.PositionTypeDTO.SHORT;
 /**
  * Position service implementation.
  */
+@Component
 public class PositionServiceImplementation extends BaseService implements PositionService {
 
     /** Big decimal scale for division. */

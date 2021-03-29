@@ -4,6 +4,7 @@ import spock.lang.Specification
 import spock.lang.Unroll
 import tech.cassandre.trading.bot.domain.Order
 import tech.cassandre.trading.bot.domain.Trade
+import tech.cassandre.trading.bot.dto.market.Ticker
 import tech.cassandre.trading.bot.dto.position.PositionDTO
 import tech.cassandre.trading.bot.dto.position.PositionRulesDTO
 import tech.cassandre.trading.bot.dto.position.PositionTypeDTO
@@ -13,9 +14,12 @@ import tech.cassandre.trading.bot.dto.trade.OrderStatusDTO
 import tech.cassandre.trading.bot.dto.trade.TradeDTO
 import tech.cassandre.trading.bot.dto.user.AccountDTO
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO
+import tech.cassandre.trading.bot.dto.util.Currency
 import tech.cassandre.trading.bot.dto.util.CurrencyDTO
+import tech.cassandre.trading.bot.dto.util.CurrencyPair
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO
 import tech.cassandre.trading.bot.repository.OrderRepository
+import tech.cassandre.trading.bot.repository.PositionRepository
 import tech.cassandre.trading.bot.repository.TradeRepository
 
 
@@ -25,19 +29,26 @@ class BasicCassandreStrategySpec extends Specification {
     TestStrategy strategy
     OrderRepository orderRepository
     TradeRepository tradeRepository
+    PositionRepository positionRepository
 
     Order order1
     Order order2
 
     Trade trade1
 
+    StrategyDTO strategyDTO = GroovyMock(StrategyDTO)
+
     def setup() {
         strategy = new TestStrategy()
 
         orderRepository = Mock(OrderRepository)
         tradeRepository = Mock(TradeRepository)
+        positionRepository = Mock(PositionRepository)
         strategy.orderRepository = orderRepository
         strategy.tradeRepository = tradeRepository
+        strategy.positionRepository = positionRepository
+        strategy.strategyDTO = strategyDTO
+
         order1 = Mock(Order)
         order2 = Mock(Order)
 
@@ -52,6 +63,28 @@ class BasicCassandreStrategySpec extends Specification {
         strategy.amountsLockedByPosition == [:]
         strategy.accounts == [:]
         strategy.lastTickers == [:]
+        strategy.strategyDTO == strategyDTO
+    }
+
+    def "should not get account by account id when accounts are empty"() {
+        when:
+        def result = strategy.getAccountByAccountId("account id")
+
+        then:
+        !result
+    }
+
+    def "should get account by account id"() {
+        given:
+        AccountDTO account = GroovyMock(AccountDTO)
+        strategy.accounts.put("account id", account)
+
+        when:
+        def result = strategy.getAccountByAccountId("account id")
+
+        then:
+        result.isPresent()
+        result.get() == account
     }
 
     def "should get list of orders"() {
@@ -90,7 +123,7 @@ class BasicCassandreStrategySpec extends Specification {
         trades
         trades instanceof Map
         trades.keySet().size() == 1
-        trades.containsValue(createTradeDTO('13654', new CurrencyPairDTO("BTC/USD"), 'orderid'))
+        trades.containsValue(createTradeDTO('13654', CurrencyPair.forValue("BTC/USD"), 'orderid'))
 
     }
 
@@ -99,13 +132,42 @@ class BasicCassandreStrategySpec extends Specification {
         strategy.positionUpdate(createNewLongPosition("o1"))
 
         then:
-        strategy.lockedAmounts[1l] == createCurrencyAmount(CurrencyDTO.BTC, 0 as BigDecimal)
+        strategy.lockedAmounts[1l] == createCurrencyAmount(Currency.BTC, 0 as BigDecimal)
+    }
+
+    def "should receive ticker update"() {
+        given:
+        Ticker ticker = Mock(Ticker)
+        CurrencyPair currencyPair = CurrencyPair.forValue("BTC/USD")
+
+        when:
+        strategy.tickerUpdate(ticker)
+
+        then:
+        strategy.tickerUpdated
+        strategy.lastTickers[currencyPair] == ticker
+
+        1 * ticker.currencyPair >> currencyPair
+    }
+
+    def "should receive account update"() {
+        given:
+        AccountDTO accountDTO = GroovyMock(AccountDTO) //This is not possible with final class
+        //FIXME: cannot use mock
+        accountDTO.accountId >> 'account id'
+
+        when:
+        strategy.accountUpdate(accountDTO)
+
+        then:
+        strategy.accountUpdated
+        strategy.accounts == ['account id': accountDTO]
     }
 
     def "should process position update and lock amount when there is opening position dto"() {
         given:
         PositionDTO positionToUpdate = createNewLongPosition("orderId1")
-        def amount = createCurrencyAmount(CurrencyDTO.BTC, 0.2 as BigDecimal)
+        def amount = createCurrencyAmount(Currency.BTC, 0.2 as BigDecimal)
 
         def order = createOrderDTO(amount, "orderId1")
 
@@ -120,12 +182,15 @@ class BasicCassandreStrategySpec extends Specification {
         strategy.positionUpdate(position)
 
         then:
-        strategy.lockedAmounts[1l] == createCurrencyAmount(CurrencyDTO.BTC, 0.2 as BigDecimal)
+        strategy.lockedAmounts[1l] == createCurrencyAmount(Currency.BTC, 0.2 as BigDecimal)
     }
 
 
     // TEST data
     class TestStrategy extends BasicCassandreStrategy {
+
+        boolean tickerUpdated = false
+        boolean accountUpdated = false
 
         @Override
         Set<CurrencyPairDTO> getRequestedCurrencyPairs() {
@@ -140,6 +205,16 @@ class BasicCassandreStrategySpec extends Specification {
         Map<Long, CurrencyAmountDTO> getLockedAmounts() {
             return amountsLockedByPosition;
         }
+
+        @Override
+        void onTickerUpdate(Ticker ticker) {
+            tickerUpdated = true
+        }
+
+        @Override
+        void onAccountUpdate(AccountDTO account) {
+            accountUpdated = true
+        }
     }
 
     PositionDTO createNewLongPosition(String orderId) {
@@ -151,9 +226,9 @@ class BasicCassandreStrategySpec extends Specification {
         return dto
     }
 
-    CurrencyAmountDTO createCurrencyAmount(final CurrencyDTO currencyDtoO, final BigDecimal amount) {
+    CurrencyAmountDTO createCurrencyAmount(final Currency currency, final BigDecimal amount) {
         return new CurrencyAmountDTO.CurrencyAmountDTOBuilder()
-                .currency(currencyDtoO)
+                .currency(currency)
                 .value(amount)
                 .build()
     }
@@ -175,7 +250,7 @@ class BasicCassandreStrategySpec extends Specification {
                 .build()
     }
 
-    TradeDTO createTradeDTO(String tradeId, CurrencyPairDTO pair, String orderId) {
+    TradeDTO createTradeDTO(String tradeId, CurrencyPair pair, String orderId) {
         return new TradeDTO.TradeDTOBuilder()
                 .tradeId(tradeId)
                 .currencyPair(pair)

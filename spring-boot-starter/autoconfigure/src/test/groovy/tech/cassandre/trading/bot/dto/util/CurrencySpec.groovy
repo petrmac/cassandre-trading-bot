@@ -6,7 +6,7 @@ import spock.lang.Unroll
 @Unroll
 class CurrencySpec extends Specification {
 
-    def "should return '#expected' currency from string value: '#currencyString"(String currencyString,
+    def "should return '#expected' currency from string value: '#currencyString'"(String currencyString,
                                                                                  Currency expected,
                                                                                  String expectedDisplay) {
         when:

@@ -132,7 +132,8 @@ public class StrategyAutoConfiguration extends BaseConfiguration {
                                      final OrderRepository newOrderRepository,
                                      final TradeRepository newTradeRepository,
                                      final PositionRepository newPositionRepository,
-                                     final PositionFlux newPositionFlux) {
+                                     final PositionFlux newPositionFlux,
+                                     final PositionService positionService) {
         this.applicationContext = newApplicationContext;
         this.exchangeParameters = newExchangeParameters;
         this.userService = newUserService;
@@ -147,6 +148,7 @@ public class StrategyAutoConfiguration extends BaseConfiguration {
         this.tradeRepository = newTradeRepository;
         this.positionRepository = newPositionRepository;
         this.positionFlux = newPositionFlux;
+        this.positionService = positionService;
     }
 
     /**
@@ -211,9 +213,6 @@ public class StrategyAutoConfiguration extends BaseConfiguration {
         strategy.getRequestedCurrencyPairs().forEach(currencyPair -> currencyPairList.add(currencyPair.toString()));
         logger.info("StrategyConfiguration - The strategy requires the following currency pair(s) : {}", currencyPairList);
 
-        // =============================================================================================================
-        // Setting up position service.
-        this.positionService = new PositionServiceImplementation(positionRepository, tradeService, positionFlux);
 
         // =============================================================================================================
         // Setting up strategy.
