@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import tech.cassandre.trading.bot.domain.Strategy;
 import tech.cassandre.trading.bot.dto.user.AccountDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 import tech.cassandre.trading.bot.repository.StrategyRepository;
 import tech.cassandre.trading.bot.test.util.junit.BaseTest;
@@ -73,7 +74,7 @@ public class BasicCassandreStrategyTest extends BaseTest {
         assertFalse(strategy.getTickersUpdateReceived().isEmpty());
         assertFalse(strategy.getTradesUpdateReceived().isEmpty());
         assertEquals(2, strategy.getLastTickers().size());
-        assertEquals(0, new BigDecimal("6").compareTo(strategy.getLastTickers().get(new CurrencyPairDTO(ETH, BTC)).getLast()));
+        assertEquals(0, new BigDecimal("6").compareTo(strategy.getLastTickers().get(CurrencyPair.forValues(ETH, BTC)).getLast()));
 
         // Trading account test.
         with().await().untilAsserted(() -> assertEquals(3, strategy.getAccountsUpdatesReceived().size()));
@@ -82,15 +83,15 @@ public class BasicCassandreStrategyTest extends BaseTest {
         assertEquals("03", tradeAccount.get().getAccountId());
 
         // Check getEstimatedBuyingCost().
-        assertTrue(strategy.getEstimatedBuyingCost(new CurrencyPairDTO(ETH, BTC), new BigDecimal(2)).isPresent());
-        assertEquals(0, new BigDecimal("12").compareTo(strategy.getEstimatedBuyingCost(new CurrencyPairDTO(ETH, BTC), new BigDecimal(2)).get().getValue()));
+        assertTrue(strategy.getEstimatedBuyingCost(CurrencyPair.forValues(ETH, BTC), new BigDecimal(2)).isPresent());
+        assertEquals(0, new BigDecimal("12").compareTo(strategy.getEstimatedBuyingCost(CurrencyPair.forValues(ETH, BTC), new BigDecimal(2)).get().getValue()));
 
         // Check canBuy() & canSell().
         final AccountDTO account = strategy.getAccounts().get("03");
         assertNotNull(account);
         assertEquals(3, account.getBalances().size());
-        final CurrencyPairDTO cp1 = new CurrencyPairDTO(BTC, ETH);
-        final CurrencyPairDTO cp2 = new CurrencyPairDTO(BTC, USDT);
+        final CurrencyPair cp1 = CurrencyPair.forValues(BTC, ETH);
+        final CurrencyPair cp2 = CurrencyPair.forValues(BTC, USDT);
 
         // canBuy().
         // Buying something for an asset we don't have.

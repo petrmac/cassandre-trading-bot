@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import tech.cassandre.trading.bot.batch.TickerFlux;
 import tech.cassandre.trading.bot.dto.market.TickerDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 import tech.cassandre.trading.bot.service.MarketService;
 import tech.cassandre.trading.bot.test.util.junit.BaseTest;
@@ -35,7 +36,7 @@ public class PositionServiceForceClosingTestMock extends BaseTest {
         MarketService marketService = mock(MarketService.class);
 
         // Replies for ETH / BTC.
-        final CurrencyPairDTO cp1 = new CurrencyPairDTO(ETH, BTC);
+        final CurrencyPair cp1 = CurrencyPair.forValues(ETH, BTC);
         given(marketService
                 .getTicker(cp1))
                 .willReturn(
@@ -46,7 +47,7 @@ public class PositionServiceForceClosingTestMock extends BaseTest {
                         Optional.of(TickerDTO.builder().currencyPair(cp1).timestamp(createZonedDateTime(5)).last(new BigDecimal("0.21")).build())
                 );
         // Replies for ETH / USDT.
-        final CurrencyPairDTO cp2 = new CurrencyPairDTO(ETH, USDT);
+        final CurrencyPair cp2 = CurrencyPair.forValues(ETH, USDT);
         given(marketService
                 .getTicker(cp2))
                 .willReturn(

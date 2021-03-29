@@ -12,14 +12,15 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 
 import static lombok.AccessLevel.PRIVATE;
+import static lombok.AccessLevel.PUBLIC;
 
 /**
  * DTO representing a stock ticker.
  * A ticker is a report of the price of certain securities, updated continuously throughout the trading session.
  */
 @Value
-@Builder
-@AllArgsConstructor(access = PRIVATE)
+@Builder(access = PUBLIC)
+@AllArgsConstructor(access = PUBLIC)
 @SuppressWarnings("checkstyle:VisibilityModifier")
 public class TickerDTO implements Ticker {
 

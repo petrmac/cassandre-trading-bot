@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 
 import java.time.ZoneId;
@@ -29,8 +30,8 @@ public class OrderDTOTest {
 	@DisplayName("Check equals()")
 	public void checkEqualToForOrder() {
 		// Currency pairs.
-		final CurrencyPairDTO cp1 = new CurrencyPairDTO(ETH, BTC);
-		final CurrencyPairDTO cp2 = new CurrencyPairDTO(ETH, USDT);
+		final CurrencyPair cp1 = CurrencyPair.forValues(ETH, BTC);
+		final CurrencyPair cp2 = CurrencyPair.forValues(ETH, USDT);
 
 		// Order 1.
 		OrderDTO order01 = OrderDTO.builder()

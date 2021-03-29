@@ -2,6 +2,7 @@ package tech.cassandre.trading.bot.service.intern;
 
 import tech.cassandre.trading.bot.batch.PositionFlux;
 import tech.cassandre.trading.bot.domain.Position;
+import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.market.TickerDTO;
 import tech.cassandre.trading.bot.dto.position.PositionCreationResultDTO;
 import tech.cassandre.trading.bot.dto.position.PositionDTO;
@@ -191,7 +192,7 @@ public class PositionServiceImplementation extends BaseService implements Positi
     }
 
     @Override
-    public final void tickerUpdate(final TickerDTO ticker) {
+    public final void tickerUpdate(final Ticker ticker) {
         // With the ticker received, we check for every position, if it should be closed.
         logger.debug("PositionService - Updating position with ticker {}", ticker);
         positionRepository.findByStatus(OPENED)

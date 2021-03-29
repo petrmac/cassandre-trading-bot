@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 import tech.cassandre.trading.bot.service.ExchangeService;
 
@@ -56,18 +57,18 @@ public class ExchangeServiceTest {
 
 		// =============================================================================================================
 		// Retrieve the available currency pairs.
-		Set<CurrencyPairDTO> currencyPairs = exchangeService.getAvailableCurrencyPairs();
+		Set<CurrencyPair> currencyPairs = exchangeService.getAvailableCurrencyPairs();
 
 		// ====================================symbols=========================================================================
 		// Tests results.
 		assertEquals(expectedMinimumNumberOfAvailableCurrencyPairs, currencyPairs.size());
 
-		assertTrue(currencyPairs.contains(new CurrencyPairDTO("LINK", "USDC")));
-		assertTrue(currencyPairs.contains(new CurrencyPairDTO("BTC", "EUR")));
-		assertTrue(currencyPairs.contains(new CurrencyPairDTO("ETH", "BTC")));
-		assertTrue(currencyPairs.contains(new CurrencyPairDTO("BAT", "USDC")));
-		assertTrue(currencyPairs.contains(new CurrencyPairDTO("BTC", "GBP")));
-		assertTrue(currencyPairs.contains(new CurrencyPairDTO("BTC", "USD")));
+		assertTrue(currencyPairs.contains(CurrencyPair.forValues("LINK", "USDC")));
+		assertTrue(currencyPairs.contains(CurrencyPair.forValues("BTC", "EUR")));
+		assertTrue(currencyPairs.contains(CurrencyPair.forValues("ETH", "BTC")));
+		assertTrue(currencyPairs.contains(CurrencyPair.forValues("BAT", "USDC")));
+		assertTrue(currencyPairs.contains(CurrencyPair.forValues("BTC", "GBP")));
+		assertTrue(currencyPairs.contains(CurrencyPair.forValues("BTC", "USD")));
 	}
 
 }

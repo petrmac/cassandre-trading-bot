@@ -11,6 +11,7 @@ import tech.cassandre.trading.bot.dto.market.TickerDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 import tech.cassandre.trading.bot.repository.OrderRepository;
 import tech.cassandre.trading.bot.repository.PositionRepository;
@@ -74,7 +75,7 @@ public class Issue426Mock extends BaseTest {
         MarketService marketService = mock(MarketService.class);
 
         // Replies for ETH / BTC.
-        final CurrencyPairDTO cp1 = new CurrencyPairDTO(ETH, BTC);
+        final CurrencyPair cp1 = CurrencyPair.forValues(ETH, BTC);
         given(marketService
                 .getTicker(cp1))
                 .willReturn(
@@ -84,7 +85,7 @@ public class Issue426Mock extends BaseTest {
                         Optional.of(TickerDTO.builder().currencyPair(cp1).timestamp(createZonedDateTime(4)).last(new BigDecimal("0.4")).build())
                 );
         // Replies for ETH / USDT.
-        final CurrencyPairDTO cp2 = new CurrencyPairDTO(ETH, USDT);
+        final CurrencyPair cp2 = CurrencyPair.forValues(ETH, USDT);
         given(marketService
                 .getTicker(cp2))
                 .willReturn(

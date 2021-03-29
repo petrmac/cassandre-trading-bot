@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.market.TickerDTO;
 import tech.cassandre.trading.bot.dto.strategy.StrategyDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
@@ -284,7 +285,7 @@ public class PositionDTO {
      * @param ticker ticker
      * @return true if the the ticker updated the position.
      */
-    public final boolean tickerUpdate(final TickerDTO ticker) {
+    public final boolean tickerUpdate(final Ticker ticker) {
         // If the position is not closing and the ticker is the one expected.
         if (getClosingOrder() == null && ticker.getCurrencyPair().equals(currencyPair)) {
 

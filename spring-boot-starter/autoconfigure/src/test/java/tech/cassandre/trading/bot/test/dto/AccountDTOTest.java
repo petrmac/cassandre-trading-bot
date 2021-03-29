@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import tech.cassandre.trading.bot.dto.user.AccountDTO;
 import tech.cassandre.trading.bot.dto.user.BalanceDTO;
+import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
 
 import java.math.BigDecimal;
@@ -48,7 +49,7 @@ public class AccountDTOTest {
 	@CaseId(39)
 	@DisplayName("Check equals() on balances list")
 	public void checkEqualToForBalancesList() {
-		Map<CurrencyDTO, BalanceDTO> balances = new LinkedHashMap<>();
+		Map<Currency, BalanceDTO> balances = new LinkedHashMap<>();
 
 		// Account 1 - No balances.
 		AccountDTO account1 = AccountDTO.builder().balances(balances).build();
@@ -88,7 +89,7 @@ public class AccountDTOTest {
 	@CaseId(40)
 	@DisplayName("Check equals() on balances values")
 	public void checkEqualToForBalancesValues() {
-		Map<CurrencyDTO, BalanceDTO> balances = new LinkedHashMap<>();
+		Map<Currency, BalanceDTO> balances = new LinkedHashMap<>();
 
 		// Account 1.
 		BalanceDTO account1Balance1 = BalanceDTO.builder()

@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.market.TickerDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 import tech.cassandre.trading.bot.service.MarketService;
 
@@ -54,8 +56,8 @@ public class MarketServiceTest {
     @Tag("integration")
     @DisplayName("Check get ticker")
     public void checkGetTicker() {
-        CurrencyPairDTO cp = new CurrencyPairDTO(ETH, BTC);
-        Optional<TickerDTO> t = marketService.getTicker(cp);
+        CurrencyPair cp = CurrencyPair.forValues(ETH, BTC);
+        Optional<Ticker> t = marketService.getTicker(cp);
         assertTrue(t.isPresent());
         // currencyPair.
         assertNotNull(t.get().getCurrencyPair());

@@ -2,7 +2,6 @@ package tech.cassandre.trading.bot.batch;
 
 import com.google.common.collect.Iterators;
 import tech.cassandre.trading.bot.dto.market.Ticker;
-import tech.cassandre.trading.bot.dto.market.TickerDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.service.MarketService;
 import tech.cassandre.trading.bot.util.base.batch.BaseExternalFlux;
@@ -17,7 +16,7 @@ import java.util.Set;
 /**
  * Ticker flux - push {@link TickerDTO}.
  */
-public class TickerFlux extends BaseExternalFlux<TickerDTO> {
+public class TickerFlux extends BaseExternalFlux<Ticker> {
 
     /** Market service. */
     private final MarketService marketService;
@@ -47,9 +46,9 @@ public class TickerFlux extends BaseExternalFlux<TickerDTO> {
     }
 
     @Override
-    protected final Set<TickerDTO> getNewValues() {
+    protected final Set<Ticker> getNewValues() {
         logger.debug("TickerFlux - Retrieving new values");
-        Set<TickerDTO> newValues = new LinkedHashSet<>();
+        Set<Ticker> newValues = new LinkedHashSet<>();
         marketService.getTicker(currencyPairsIterator.next()).ifPresent(ticker -> {
             if (!ticker.equals(previousValues.get(ticker.getCurrencyPair()))) {
                 logger.debug("TickerFlux - New ticker received : {}", ticker);
@@ -61,7 +60,7 @@ public class TickerFlux extends BaseExternalFlux<TickerDTO> {
     }
 
     @Override
-    protected final Optional<TickerDTO> saveValue(final TickerDTO newValue) {
+    protected final Optional<Ticker> saveValue(final Ticker newValue) {
         return Optional.ofNullable(newValue);
     }
 

@@ -6,16 +6,23 @@ import spock.lang.Unroll
 @Unroll
 class CurrencySpec extends Specification {
 
-    def "should return '#expected' currency from string value: '#currencyString"(String currencyString, Currency expected) {
+    def "should return '#expected' currency from string value: '#currencyString"(String currencyString,
+                                                                                 Currency expected,
+                                                                                 String expectedDisplay) {
         when:
-        def currency = Currency.forString(currency)
+        def result = Currency.forString(currencyString)
 
         then:
-        currency == expected
+        result == expected
+        result.displayName == expectedDisplay
 
         where:
-        currency     | expected
-        Currency.AED | "AED"
+        currencyString | expected     | expectedDisplay
+        'AED'          | Currency.AED | 'United Arab Emirates Dirham'
+        'AFN'          | Currency.AFN | 'Afghan Afghani'
+        'ALL'          | Currency.ALL | 'Albanian Lek'
+        'AMD'          | Currency.AMD | 'Armenian Dram'
+
 
     }
 }

@@ -15,6 +15,7 @@ import tech.cassandre.trading.bot.dto.strategy.StrategyDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 import tech.cassandre.trading.bot.repository.OrderRepository;
 import tech.cassandre.trading.bot.test.util.junit.BaseTest;
@@ -113,7 +114,7 @@ public class OrderTest extends BaseTest {
         assertNotNull(o.get().getStrategy());
         assertEquals(1, o.get().getStrategy().getId());
         assertEquals("01", o.get().getStrategy().getStrategyId());
-        assertEquals(new CurrencyPairDTO("USDT/BTC"), o.get().getCurrencyPair());
+        assertEquals(CurrencyPair.forValue("USDT/BTC"), o.get().getCurrencyPair());
         assertEquals(0, new BigDecimal("0.000015").compareTo(o.get().getAmount().getValue()));
         assertEquals(USDT, o.get().getAmount().getCurrency());
         assertEquals(0, new BigDecimal("0.000013").compareTo(o.get().getAveragePrice().getValue()));

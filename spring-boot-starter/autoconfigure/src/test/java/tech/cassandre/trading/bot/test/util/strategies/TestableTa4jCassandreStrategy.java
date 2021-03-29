@@ -9,9 +9,9 @@ import org.ta4j.core.indicators.SMAIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.trading.rules.OverIndicatorRule;
 import org.ta4j.core.trading.rules.UnderIndicatorRule;
-import tech.cassandre.trading.bot.dto.market.TickerDTO;
+import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.user.AccountDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.strategy.BasicTa4jCassandreStrategy;
 import tech.cassandre.trading.bot.strategy.CassandreStrategy;
 
@@ -50,16 +50,16 @@ public class TestableTa4jCassandreStrategy extends BasicTa4jCassandreStrategy {
     private int exitCount = 0;
 
     /** Tickers update received. */
-    private final List<TickerDTO> tickersUpdateReceived = new LinkedList<>();
+    private final List<Ticker> tickersUpdateReceived = new LinkedList<>();
 
     @Override
-    public void onTickerUpdate(TickerDTO ticker) {
+    public void onTickerUpdate(Ticker ticker) {
         tickersUpdateReceived.add(ticker);
     }
 
     @Override
-    public CurrencyPairDTO getRequestedCurrencyPair() {
-        return new CurrencyPairDTO(BTC, USDT);
+    public CurrencyPair getRequestedCurrencyPair() {
+        return CurrencyPair.forValues(BTC, USDT);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class TestableTa4jCassandreStrategy extends BasicTa4jCassandreStrategy {
      *
      * @return tickersUpdateReceived
      */
-    public final List<TickerDTO> getTickersUpdateReceived() {
+    public final List<Ticker> getTickersUpdateReceived() {
         return tickersUpdateReceived;
     }
 

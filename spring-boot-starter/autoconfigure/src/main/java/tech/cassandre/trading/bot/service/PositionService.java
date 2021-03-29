@@ -1,5 +1,6 @@
 package tech.cassandre.trading.bot.service;
 
+import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.market.TickerDTO;
 import tech.cassandre.trading.bot.dto.position.PositionCreationResultDTO;
 import tech.cassandre.trading.bot.dto.position.PositionDTO;
@@ -95,7 +96,7 @@ public interface PositionService {
      *
      * @param ticker ticker
      */
-    void tickerUpdate(TickerDTO ticker);
+    void tickerUpdate(Ticker ticker);
 
     /**
      * Return the gains made by all closed positions.

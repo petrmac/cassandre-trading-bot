@@ -35,7 +35,7 @@ public class CurrencyAmountDTO implements CurrencyAmount {
      * @param newValue    amount value
      * @param newCurrency amount currency
      */
-    public CurrencyAmountDTO(final String newValue, final CurrencyDTO newCurrency) {
+    public CurrencyAmountDTO(final String newValue, final Currency newCurrency) {
         if (newValue != null && newCurrency != null) {
             this.value = new BigDecimal(newValue);
             this.currency = newCurrency;

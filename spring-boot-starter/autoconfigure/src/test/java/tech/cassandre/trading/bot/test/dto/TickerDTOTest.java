@@ -4,6 +4,7 @@ import io.qase.api.annotation.CaseId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import tech.cassandre.trading.bot.dto.market.TickerDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 import tech.cassandre.trading.bot.test.util.junit.BaseTest;
 
@@ -24,8 +25,8 @@ public class TickerDTOTest extends BaseTest {
 	@DisplayName("Check equals()")
 	public void checkEqualToForTickers() {
 		// Currency pairs.
-		final CurrencyPairDTO cp1 = new CurrencyPairDTO(ETH, BTC);
-		final CurrencyPairDTO cp2 = new CurrencyPairDTO(ETH, USDT);
+		final CurrencyPair cp1 = CurrencyPair.forValues(ETH, BTC);
+		final CurrencyPair cp2 = CurrencyPair.forValues(ETH, USDT);
 
 		// Dates.
 		ZonedDateTime date1 = createZonedDateTime("23-09-2017");

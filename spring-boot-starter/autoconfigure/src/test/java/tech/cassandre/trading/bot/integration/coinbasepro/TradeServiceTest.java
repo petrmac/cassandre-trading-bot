@@ -13,6 +13,7 @@ import org.springframework.test.context.TestPropertySource;
 import tech.cassandre.trading.bot.dto.trade.OrderCreationResultDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 import tech.cassandre.trading.bot.service.TradeService;
 import tech.cassandre.trading.bot.test.util.junit.BaseTest;
@@ -74,7 +75,7 @@ public class TradeServiceTest extends BaseTest {
     @Tag("integration")
     @DisplayName("Check creates a buy/sell market order")
     public void checkCreateBuySellMarketOrder() {
-        final CurrencyPairDTO cp = new CurrencyPairDTO(ETH, BTC);
+        final CurrencyPair cp = CurrencyPair.forValues(ETH, BTC);
 
         // =============================================================================================================
         // Making a buy market order with a size below the minimum requirement. Testing error management.
@@ -103,7 +104,7 @@ public class TradeServiceTest extends BaseTest {
     @Tag("integration")
     @DisplayName("Check creates a buy limit order")
     public void checkCreateBuyLimitOrder() {
-        final CurrencyPairDTO cp = new CurrencyPairDTO(ETH, BTC);
+        final CurrencyPair cp = CurrencyPair.forValues(ETH, BTC);
 
         // =============================================================================================================
         // Making a buy limit order (Buy 0.0001 ETH).
@@ -148,7 +149,7 @@ public class TradeServiceTest extends BaseTest {
     @DisplayName("Check cancel an order")
     @Disabled("Seems Coinbase pro doesn't support canceling an order")
     public void checkCancelOrder() {
-        final CurrencyPairDTO cp = new CurrencyPairDTO(ETH, BTC);
+        final CurrencyPair cp = CurrencyPair.forValues(ETH, BTC);
 
         // Making a buy limit order (Buy 0.0001 ETH).
         final OrderCreationResultDTO result1 = strategy.createSellLimitOrder(cp, new BigDecimal("0.01"), new BigDecimal("10000000"));
@@ -172,7 +173,7 @@ public class TradeServiceTest extends BaseTest {
     @Tag("integration")
     @DisplayName("Check get trades")
     public void checkGetTrades() {
-        final CurrencyPairDTO cp = new CurrencyPairDTO(ETH, BTC);
+        final CurrencyPair cp = CurrencyPair.forValues(ETH, BTC);
 
         // Creates two orders of the same amount (one buy, one sell).
         final OrderCreationResultDTO result1 = strategy.createBuyMarketOrder(cp, new BigDecimal("1"));

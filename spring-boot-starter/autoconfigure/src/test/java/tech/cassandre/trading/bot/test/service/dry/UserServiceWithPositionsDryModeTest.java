@@ -15,6 +15,7 @@ import tech.cassandre.trading.bot.dto.position.PositionDTO;
 import tech.cassandre.trading.bot.dto.position.PositionRulesDTO;
 import tech.cassandre.trading.bot.dto.user.BalanceDTO;
 import tech.cassandre.trading.bot.dto.user.UserDTO;
+import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
 import tech.cassandre.trading.bot.service.PositionService;
@@ -86,7 +87,7 @@ public class UserServiceWithPositionsDryModeTest extends BaseTest {
         // ETH  10
         accountFlux.update();
         await().until(() -> !strategy.getAccountsUpdatesReceived().isEmpty());
-        Map<CurrencyDTO, BalanceDTO> balances = getBalances();
+        Map<Currency, BalanceDTO> balances = getBalances();
         assertEquals(0, new BigDecimal("0.99962937").compareTo(balances.get(BTC).getAvailable()));
         assertEquals(0, new BigDecimal("1000").compareTo(balances.get(USDT).getAvailable()));
         assertEquals(0, new BigDecimal("10").compareTo(balances.get(ETH).getAvailable()));
@@ -334,7 +335,7 @@ public class UserServiceWithPositionsDryModeTest extends BaseTest {
      *
      * @return balances
      */
-    private Map<CurrencyDTO, BalanceDTO> getBalances() {
+    private Map<Currency, BalanceDTO> getBalances() {
         final Optional<UserDTO> user = userService.getUser();
         return user.map(userDTO -> userDTO.getAccounts().get("trade").getBalances()).orElse(null);
     }

@@ -5,6 +5,7 @@ import org.knowm.xchange.instrument.Instrument;
 import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.market.TickerDTO;
 import tech.cassandre.trading.bot.dto.strategy.StrategyDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
@@ -90,13 +91,13 @@ public class BaseTest {
     protected final CurrencyPair cp2 = CurrencyPair.forValues(ETH, USDT);
 
     /** XChange cp2 for tests. */
-    protected final CurrencyPair xChangeCP2 = CurrencyPair.forValues(Currency.ETH, Currency.USDT);
+    protected final org.knowm.xchange.currency.CurrencyPair xChangeCP2 = new org.knowm.xchange.currency.CurrencyPair(org.knowm.xchange.currency.Currency.ETH, org.knowm.xchange.currency.Currency.USDT);
 
     /** cp3 for tests. */
     protected final tech.cassandre.trading.bot.dto.util.CurrencyPair cp3 = tech.cassandre.trading.bot.dto.util.CurrencyPair.forValues(BTC, USDT);
 
     /** XChange cp2 for tests. */
-    protected final CurrencyPair xChangeCP3 = CurrencyPair.forValues(Currency.BTC, Currency.USDT);
+    protected final org.knowm.xchange.currency.CurrencyPair xChangeCP3 = new org.knowm.xchange.currency.CurrencyPair(org.knowm.xchange.currency.Currency.BTC, org.knowm.xchange.currency.Currency.USDT);
 
     /** cp4 for tests. */
     protected final CurrencyPair cp4 = CurrencyPair.forValues(KCS, USDT);
@@ -158,12 +159,10 @@ public class BaseTest {
      * @param bid bid price
      * @return ticket
      */
-    protected static Optional<TickerDTO> getFakeTicker(final CurrencyPair cp, final BigDecimal bid) {
-        return Optional.of(TickerDTO.builder()
-                .currencyPair(cp)
-                .timestamp(getRandomDate())
-                .last(bid)
-                .build());
+    protected static Optional<Ticker> getFakeTicker(final CurrencyPair cp, final BigDecimal bid) {
+        Ticker ticker = new TickerDTO(cp, null, null, bid, null, null,
+                null, null, null, null, null, null, getRandomDate());
+        return Optional.of(ticker);
     }
 
     /**

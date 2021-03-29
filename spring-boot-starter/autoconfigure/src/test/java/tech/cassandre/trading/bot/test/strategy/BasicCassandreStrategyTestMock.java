@@ -17,7 +17,9 @@ import tech.cassandre.trading.bot.dto.trade.TradeDTO;
 import tech.cassandre.trading.bot.dto.user.AccountDTO;
 import tech.cassandre.trading.bot.dto.user.BalanceDTO;
 import tech.cassandre.trading.bot.dto.user.UserDTO;
+import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 import tech.cassandre.trading.bot.repository.OrderRepository;
 import tech.cassandre.trading.bot.repository.PositionRepository;
@@ -48,7 +50,7 @@ import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.USDT;
 @TestConfiguration
 public class BasicCassandreStrategyTestMock extends BaseTest {
 
-    private final CurrencyPairDTO cp1 = new CurrencyPairDTO(ETH, BTC);
+    private final CurrencyPair cp1 = CurrencyPair.forValues(ETH, BTC);
 
     @Autowired
     private PositionRepository positionRepository;
@@ -93,7 +95,7 @@ public class BasicCassandreStrategyTestMock extends BaseTest {
     @Bean
     @Primary
     public UserService userService() {
-        Map<CurrencyDTO, BalanceDTO> balances = new LinkedHashMap<>();
+        Map<Currency, BalanceDTO> balances = new LinkedHashMap<>();
         final Map<String, AccountDTO> accounts = new LinkedHashMap<>();
         UserService userService = mock(UserService.class);
         // Returns three updates.
@@ -150,7 +152,7 @@ public class BasicCassandreStrategyTestMock extends BaseTest {
                 BaseTest.getFakeTicker(cp1, new BigDecimal("4")),   // Ticker 04.
                 BaseTest.getFakeTicker(cp1, new BigDecimal("5")),   // Ticker 05.
                 BaseTest.getFakeTicker(cp1, new BigDecimal("6")),   // Ticker 06.
-                BaseTest.getFakeTicker(new CurrencyPairDTO(BTC, USDT), new BigDecimal("10000"))    // Ticker 07.
+                BaseTest.getFakeTicker(CurrencyPair.forValues(BTC, USDT), new BigDecimal("10000"))    // Ticker 07.
         );
         return service;
     }
@@ -188,7 +190,7 @@ public class BasicCassandreStrategyTestMock extends BaseTest {
         // Creates the mock.
         final PositionRulesDTO noRules = PositionRulesDTO.builder().build();
         PositionService positionService = mock(PositionService.class);
-        final CurrencyPairDTO cp1 = new CurrencyPairDTO(ETH, BTC);
+        final CurrencyPair cp1 = CurrencyPair.forValues(ETH, BTC);
         final BigDecimal amount = new BigDecimal("1");
 
         // Reply 1 : 2 positions.

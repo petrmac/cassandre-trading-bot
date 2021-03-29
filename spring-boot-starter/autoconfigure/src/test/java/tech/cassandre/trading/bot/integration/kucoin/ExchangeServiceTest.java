@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 import tech.cassandre.trading.bot.service.ExchangeService;
 
@@ -56,20 +57,20 @@ public class ExchangeServiceTest {
 
 		// =============================================================================================================
 		// Retrieve the available currency pairs.
-		Set<CurrencyPairDTO> currencyPairs = exchangeService.getAvailableCurrencyPairs();
+		Set<CurrencyPair> currencyPairs = exchangeService.getAvailableCurrencyPairs();
 
 		// ====================================symbols=========================================================================
 		// Tests results.
 		assertEquals(expectedMinimumNumberOfAvailableCurrencyPairs, currencyPairs.size());
 
-		assertTrue(currencyPairs.contains(new CurrencyPairDTO("KCS", "USDT")));
-		assertTrue(currencyPairs.contains(new CurrencyPairDTO(KCS, USDT)));
-		assertTrue(currencyPairs.contains(new CurrencyPairDTO("ETH", "USDT")));
-		assertTrue(currencyPairs.contains(new CurrencyPairDTO(ETH, USDT)));
-		assertTrue(currencyPairs.contains(new CurrencyPairDTO("BTC", "USDT")));
-		assertTrue(currencyPairs.contains(new CurrencyPairDTO(BTC, USDT)));
-		assertTrue(currencyPairs.contains(new CurrencyPairDTO("ETH", "BTC")));
-		assertTrue(currencyPairs.contains(new CurrencyPairDTO(ETH, BTC)));
+		assertTrue(currencyPairs.contains(CurrencyPair.forValues("KCS", "USDT")));
+		assertTrue(currencyPairs.contains(CurrencyPair.forValues(KCS, USDT)));
+		assertTrue(currencyPairs.contains(CurrencyPair.forValues("ETH", "USDT")));
+		assertTrue(currencyPairs.contains(CurrencyPair.forValues(ETH, USDT)));
+		assertTrue(currencyPairs.contains(CurrencyPair.forValues("BTC", "USDT")));
+		assertTrue(currencyPairs.contains(CurrencyPair.forValues(BTC, USDT)));
+		assertTrue(currencyPairs.contains(CurrencyPair.forValues("ETH", "BTC")));
+		assertTrue(currencyPairs.contains(CurrencyPair.forValues(ETH, BTC)));
 	}
 
 }

@@ -12,7 +12,7 @@ import tech.cassandre.trading.bot.batch.TradeFlux;
 import tech.cassandre.trading.bot.domain.ExchangeAccount;
 import tech.cassandre.trading.bot.domain.Order;
 import tech.cassandre.trading.bot.domain.Strategy;
-import tech.cassandre.trading.bot.dto.market.TickerDTO;
+import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.position.PositionDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
@@ -308,7 +308,7 @@ public class StrategyAutoConfiguration extends BaseConfiguration {
 
         // Ticker flux.
         tickerFlux.updateRequestedCurrencyPairs(strategy.getRequestedCurrencyPairs());
-        final ConnectableFlux<TickerDTO> connectableTickerFlux = tickerFlux.getFlux().publish();
+        final ConnectableFlux<Ticker> connectableTickerFlux = tickerFlux.getFlux().publish();
         // if in dry mode, we also send the ticker to the trade service in dry mode.
         if (tradeService instanceof TradeServiceDryModeImplementation) {
             connectableTickerFlux.subscribe(((TradeServiceDryModeImplementation) tradeService)::tickerUpdate);

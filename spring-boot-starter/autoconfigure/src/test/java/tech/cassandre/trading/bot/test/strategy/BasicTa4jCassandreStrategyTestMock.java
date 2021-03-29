@@ -18,6 +18,8 @@ import tech.cassandre.trading.bot.dto.trade.TradeDTO;
 import tech.cassandre.trading.bot.dto.user.AccountDTO;
 import tech.cassandre.trading.bot.dto.user.BalanceDTO;
 import tech.cassandre.trading.bot.dto.user.UserDTO;
+import tech.cassandre.trading.bot.dto.util.Currency;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.repository.OrderRepository;
 import tech.cassandre.trading.bot.repository.PositionRepository;
 import tech.cassandre.trading.bot.repository.TradeRepository;
@@ -92,7 +94,7 @@ public class BasicTa4jCassandreStrategyTestMock extends BaseTest {
     @Bean
     @Primary
     public UserService userService() {
-        Map<CurrencyDTO, BalanceDTO> balances = new LinkedHashMap<>();
+        Map<Currency, BalanceDTO> balances = new LinkedHashMap<>();
         final Map<String, AccountDTO> accounts = new LinkedHashMap<>();
         UserService userService = mock(UserService.class);
         // Returns three updates.
@@ -293,7 +295,7 @@ public class BasicTa4jCassandreStrategyTestMock extends BaseTest {
         // Creates the mock.
         final PositionRulesDTO noRules = PositionRulesDTO.builder().build();
         PositionService positionService = mock(PositionService.class);
-        final CurrencyPairDTO cp3 = new CurrencyPairDTO(ETH, BTC);
+        final CurrencyPair cp3 = CurrencyPair.forValues(ETH, BTC);
         final BigDecimal amount = new BigDecimal("1");
 
         StrategyDTO strategy = StrategyDTO.builder().strategyId("1").build();

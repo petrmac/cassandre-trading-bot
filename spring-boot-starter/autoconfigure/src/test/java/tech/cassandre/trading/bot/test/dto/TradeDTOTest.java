@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 
 import java.time.ZonedDateTime;
@@ -29,7 +30,7 @@ public class TradeDTOTest {
                 .tradeId("0000001")
                 .type(BID)
                 .orderId("000002")
-                .currencyPair(new CurrencyPairDTO(ETH, BTC))
+                .currencyPair(CurrencyPair.forValues(ETH, BTC))
                 .amount(new CurrencyAmountDTO("1", ETH))
                 .price(new CurrencyAmountDTO("1", BTC))
                 .fee(new CurrencyAmountDTO("1", BTC))

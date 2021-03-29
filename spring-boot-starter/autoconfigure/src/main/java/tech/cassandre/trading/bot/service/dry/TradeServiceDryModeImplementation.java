@@ -296,7 +296,7 @@ public class TradeServiceDryModeImplementation extends BaseService implements Tr
      *
      * @param ticker ticker
      */
-    public void tickerUpdate(final TickerDTO ticker) {
+    public void tickerUpdate(final Ticker ticker) {
         lastTickers.put(ticker.getCurrencyPair(), ticker);
     }
 

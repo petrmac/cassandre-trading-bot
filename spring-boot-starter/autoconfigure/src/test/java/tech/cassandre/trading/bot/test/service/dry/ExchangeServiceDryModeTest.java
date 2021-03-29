@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 import tech.cassandre.trading.bot.service.ExchangeService;
 import tech.cassandre.trading.bot.test.util.junit.configuration.Configuration;
@@ -39,10 +40,10 @@ public class ExchangeServiceDryModeTest {
     @DisplayName("Check the list of available currency pairs")
     public void checkGetAvailableCurrencyPairs() {
         // The available currencies should be the same than the strategy.
-        final Set<CurrencyPairDTO> availableCurrencyPairs = exchangeService.getAvailableCurrencyPairs();
+        final Set<CurrencyPair> availableCurrencyPairs = exchangeService.getAvailableCurrencyPairs();
         assertEquals(2, availableCurrencyPairs.size());
-        assertTrue(availableCurrencyPairs.contains(new CurrencyPairDTO(ETH, BTC)));
-        assertTrue(availableCurrencyPairs.contains(new CurrencyPairDTO(ETH, USDT)));
+        assertTrue(availableCurrencyPairs.contains(CurrencyPair.forValues(ETH, BTC)));
+        assertTrue(availableCurrencyPairs.contains(CurrencyPair.forValues(ETH, USDT)));
     }
 
 }

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import tech.cassandre.trading.bot.batch.TickerFlux;
 import tech.cassandre.trading.bot.dto.market.TickerDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.service.MarketService;
 import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
@@ -32,7 +33,7 @@ public class TradeServiceDryModeTestMock {
         MarketService marketService = mock(MarketService.class);
 
         // Replies for ETH / BTC.
-        final CurrencyPairDTO cp1 = new CurrencyPairDTO(CurrencyDTO.ETH, CurrencyDTO.BTC);
+        final CurrencyPair cp1 = CurrencyPair.forValues(CurrencyDTO.ETH, CurrencyDTO.BTC);
         given(marketService
                 .getTicker(cp1))
                 .willReturn(Optional.of(TickerDTO.builder().currencyPair(cp1).timestamp(ZonedDateTime.now()).last(new BigDecimal("0.2")).build())

@@ -16,6 +16,7 @@ import tech.cassandre.trading.bot.dto.trade.TradeDTO;
 import tech.cassandre.trading.bot.dto.user.AccountDTO;
 import tech.cassandre.trading.bot.dto.user.BalanceDTO;
 import tech.cassandre.trading.bot.dto.user.UserDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 import tech.cassandre.trading.bot.service.TradeService;
 import tech.cassandre.trading.bot.service.UserService;
@@ -285,7 +286,7 @@ public class UserServiceDryModeTest extends BaseTest {
         // =============================================================================================================
         // Received ticker for ETH/EUR.
         ticker = TickerDTO.builder()
-                .currencyPair(new CurrencyPairDTO(ETH, EUR))
+                .currencyPair(CurrencyPair.forValues(ETH, EUR))
                 .last(new BigDecimal("0.032666"))
                 .bid(new BigDecimal("0.032466"))
                 .ask(new BigDecimal("0.032657"))
@@ -299,7 +300,7 @@ public class UserServiceDryModeTest extends BaseTest {
 
         // =============================================================================================================
         // Buying with a currency we don't have.
-        final OrderCreationResultDTO buyMarketOrder1 = strategy.createBuyMarketOrder(new CurrencyPairDTO(ETH, EUR), new BigDecimal("1000"));
+        final OrderCreationResultDTO buyMarketOrder1 = strategy.createBuyMarketOrder(CurrencyPair.forValues(ETH, EUR), new BigDecimal("1000"));
         assertFalse(buyMarketOrder1.isSuccessful());
         assertTrue(buyMarketOrder1.getErrorMessage().contains("No assets for EUR"));
 
@@ -333,7 +334,7 @@ public class UserServiceDryModeTest extends BaseTest {
         // =============================================================================================================
         // Received ticker for ETH/EUR.
         ticker = TickerDTO.builder()
-                .currencyPair(new CurrencyPairDTO(ETH, EUR))
+                .currencyPair(CurrencyPair.forValues(ETH, EUR))
                 .last(new BigDecimal("0.032666"))
                 .bid(new BigDecimal("0.032466"))
                 .ask(new BigDecimal("0.032657"))
@@ -347,7 +348,7 @@ public class UserServiceDryModeTest extends BaseTest {
 
         // =============================================================================================================
         // Selling with a currency we don't have.
-        final OrderCreationResultDTO sellMarketOrder1 = strategy.createSellMarketOrder(new CurrencyPairDTO(ETH, EUR), new BigDecimal("1000"));
+        final OrderCreationResultDTO sellMarketOrder1 = strategy.createSellMarketOrder(CurrencyPair.forValues(ETH, EUR), new BigDecimal("1000"));
         assertFalse(sellMarketOrder1.isSuccessful());
         assertTrue(sellMarketOrder1.getErrorMessage().contains("Not enough assets"));
 
