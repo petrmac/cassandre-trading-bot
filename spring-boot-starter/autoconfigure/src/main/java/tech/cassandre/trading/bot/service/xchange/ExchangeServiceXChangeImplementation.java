@@ -1,7 +1,7 @@
 package tech.cassandre.trading.bot.service.xchange;
 
 import org.knowm.xchange.Exchange;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.service.ExchangeService;
 import tech.cassandre.trading.bot.util.base.service.BaseService;
 
@@ -27,7 +27,7 @@ public class ExchangeServiceXChangeImplementation extends BaseService implements
     }
 
     @Override
-    public final Set<CurrencyPairDTO> getAvailableCurrencyPairs() {
+    public final Set<CurrencyPair> getAvailableCurrencyPairs() {
         logger.debug("ExchangeService - Retrieving available currency pairs");
         return exchange.getExchangeMetaData()
                 .getCurrencyPairs()

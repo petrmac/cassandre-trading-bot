@@ -1,7 +1,7 @@
 package tech.cassandre.trading.bot.service.dry;
 
 import org.springframework.context.ApplicationContext;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.service.ExchangeService;
 import tech.cassandre.trading.bot.strategy.CassandreStrategy;
 import tech.cassandre.trading.bot.strategy.CassandreStrategyInterface;
@@ -15,7 +15,7 @@ import java.util.Set;
 public class ExchangeServiceDryModeImplementation implements ExchangeService {
 
     /** Currency pairs retrieved from the strategy. */
-    private final Set<CurrencyPairDTO> currencyPairs;
+    private final Set<CurrencyPair> currencyPairs;
 
     /**
      * Constructor.
@@ -29,7 +29,7 @@ public class ExchangeServiceDryModeImplementation implements ExchangeService {
     }
 
     @Override
-    public final Set<CurrencyPairDTO> getAvailableCurrencyPairs() {
+    public final Set<CurrencyPair> getAvailableCurrencyPairs() {
         return currencyPairs;
     }
 

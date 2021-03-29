@@ -11,8 +11,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import tech.cassandre.trading.bot.batch.TickerFlux;
 import tech.cassandre.trading.bot.dto.market.TickerDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.Currency;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.service.MarketService;
 
 import java.io.FileNotFoundException;
@@ -67,7 +67,7 @@ public class TickerFluxMock {
     private static final String TICKERS_FILE_SUFFIX = ".*sv";
 
     /** Flux status - true if the flux is over. */
-    private final HashMap<CurrencyPairDTO, Boolean> fluxTerminated = new LinkedHashMap<>();
+    private final HashMap<CurrencyPair, Boolean> fluxTerminated = new LinkedHashMap<>();
 
     @Bean
     @Primary
@@ -86,7 +86,7 @@ public class TickerFluxMock {
                 .stream().filter(resource -> resource.getFilename() != null)
                 .forEach(resource -> {
                     // Adding data.
-                    final CurrencyPairDTO cp = getCurrencyPairFromFileName(resource);
+                    final CurrencyPair cp = getCurrencyPairFromFileName(resource);
                     logger.info("Adding tests data from " + resource.getFilename().substring(resource.getFilename().indexOf(TICKERS_FILE_PREFIX)));
                     fluxTerminated.put(cp, false);
                     //noinspection rawtypes
@@ -136,14 +136,14 @@ public class TickerFluxMock {
      * @param file file
      * @return currency pair
      */
-    public CurrencyPairDTO getCurrencyPairFromFileName(final Resource file) {
+    public CurrencyPair getCurrencyPairFromFileName(final Resource file) {
         // Getting the string value of currency pair.
         if (file.getFilename() != null) {
             final int currencyPairIndexStart = file.getFilename().indexOf(TICKERS_FILE_PREFIX) + TICKERS_FILE_PREFIX.length();
             final int currencyPairIndexStop = file.getFilename().indexOf("sv") - 2;
             final String currencyPairAsString = file.getFilename().substring(currencyPairIndexStart, currencyPairIndexStop);
             final String[] currencyPairAsSplit = currencyPairAsString.split("-");
-            return new CurrencyPairDTO(new CurrencyDTO(currencyPairAsSplit[0].toUpperCase()), new CurrencyDTO(currencyPairAsSplit[1].toUpperCase()));
+            return CurrencyPair.forValues(Currency.forString(currencyPairAsSplit[0].toUpperCase()), Currency.forString(currencyPairAsSplit[1].toUpperCase()));
         } else {
             return null;
         }
@@ -156,7 +156,7 @@ public class TickerFluxMock {
      * @return tickers
      */
     private List<TickerDTO> getTickersFromFile(final Resource file) {
-        final CurrencyPairDTO currencyPair = getCurrencyPairFromFileName(file);
+        final CurrencyPair currencyPair = getCurrencyPairFromFileName(file);
         final List<TickerDTO> tickers = new LinkedList<>();
         // Replies from TSV files.
         try (Scanner scanner = new Scanner(file.getFile())) {
@@ -208,7 +208,7 @@ public class TickerFluxMock {
      * @param currencyPair currency pair
      * @return true if the flux is done
      */
-    public boolean isFluxDone(final CurrencyPairDTO currencyPair) {
+    public boolean isFluxDone(final CurrencyPair currencyPair) {
         return fluxTerminated.getOrDefault(currencyPair, false);
     }
 

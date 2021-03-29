@@ -6,8 +6,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
+import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 
 import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 
@@ -34,7 +35,7 @@ public interface OrderMapper {
 
     @Named("mapLimitOrderToOrderDTOAmount")
     default CurrencyAmountDTO mapLimitOrderToOrderDTOAmount(LimitOrder source) {
-        CurrencyPairDTO cp = new CurrencyPairDTO(source.getInstrument());
+        CurrencyPair cp = CurrencyPair.forValue(source.getInstrument());
         if (source.getOriginalAmount() != null && source.getInstrument() != null) {
             return CurrencyAmountDTO.builder()
                     .value(source.getOriginalAmount())
@@ -47,7 +48,7 @@ public interface OrderMapper {
 
     @Named("mapLimitOrderToOrderDTOCumulativeAmount")
     default CurrencyAmountDTO mapLimitOrderToOrderDTOCumulativeAmount(LimitOrder source) {
-        CurrencyPairDTO cp = new CurrencyPairDTO(source.getInstrument());
+        CurrencyPair cp = CurrencyPair.forValue(source.getInstrument());
         if (source.getCumulativeAmount() != null && source.getInstrument() != null) {
             return CurrencyAmountDTO.builder()
                     .value(source.getCumulativeAmount())
@@ -60,7 +61,7 @@ public interface OrderMapper {
 
     @Named("mapLimitOrderToOrderDTOAveragePrice")
     default CurrencyAmountDTO mapLimitOrderToOrderDTOAveragePrice(LimitOrder source) {
-        CurrencyPairDTO cp = new CurrencyPairDTO(source.getInstrument());
+        CurrencyPair cp = CurrencyPair.forValue(source.getInstrument());
         if (source.getAveragePrice() != null && source.getInstrument() != null) {
             return CurrencyAmountDTO.builder()
                     .value(source.getAveragePrice())
@@ -73,7 +74,7 @@ public interface OrderMapper {
 
     @Named("mapLimitOrderToOrderDTOLimitPrice")
     default CurrencyAmountDTO mapLimitOrderToOrderDTOLimitPrice(LimitOrder source) {
-        CurrencyPairDTO cp = new CurrencyPairDTO(source.getInstrument());
+        CurrencyPair cp = CurrencyPair.forValue(source.getInstrument());
         if (source.getLimitPrice() != null && source.getInstrument() != null) {
             return CurrencyAmountDTO.builder()
                     .value(source.getLimitPrice())
@@ -89,7 +90,18 @@ public interface OrderMapper {
 
     @Mapping(target = "createdOn", ignore = true)
     @Mapping(target = "updatedOn", ignore = true)
+    @Mapping(source = "currencyPair", target = "currencyPair")
     tech.cassandre.trading.bot.domain.Order mapToOrder(OrderDTO source);
+
+    @Named("mapCurrencyToString")
+    default String map(Currency value){
+        return value.getCode();
+    }
+
+    @Named("mapXchangeCurrencyToString")
+    default String map(org.knowm.xchange.currency.Currency value){
+        return value.getCurrencyCode();
+    }
 
     @Mapping(target = "createdOn", ignore = true)
     @Mapping(target = "updatedOn", ignore = true)

@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import tech.cassandre.trading.bot.dto.position.PositionDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
+import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.dto.util.GainDTO;
 import tech.cassandre.trading.bot.service.PositionService;
 import tech.cassandre.trading.bot.test.util.junit.configuration.Configuration;
@@ -159,7 +159,7 @@ public class PositionGainsServiceTest {
         assertEquals(ETH, gain7.getNetAmount().getCurrency());
 
         // Check all gains.
-        final HashMap<CurrencyDTO, GainDTO> gains = positionService.getGains();
+        final HashMap<Currency, GainDTO> gains = positionService.getGains();
         assertEquals(3, gains.size());
 
         // Gains USDT.

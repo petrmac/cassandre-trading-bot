@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
+import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.market.TickerDTO;
 import tech.cassandre.trading.bot.service.MarketService;
 import tech.cassandre.trading.bot.test.util.junit.BaseTest;
@@ -145,12 +146,12 @@ public class TickerFluxTest extends BaseTest {
         // Check data we have in the strategy.
         assertEquals(2, strategy.getLastTickers().size());
         // For CP1.
-        final Optional<TickerDTO> lastTickerForCP1 = strategy.getLastTickerByCurrencyPair(cp1);
+        final Optional<Ticker> lastTickerForCP1 = strategy.getLastTickerByCurrencyPair(cp1);
         assertTrue(lastTickerForCP1.isPresent());
         assertEquals(cp1, lastTickerForCP1.get().getCurrencyPair());
         assertEquals(0, new BigDecimal("6").compareTo(lastTickerForCP1.get().getLast()));
         // For CP2.
-        final Optional<TickerDTO> lastTickerForCP2 = strategy.getLastTickerByCurrencyPair(cp2);
+        final Optional<Ticker> lastTickerForCP2 = strategy.getLastTickerByCurrencyPair(cp2);
         assertTrue(lastTickerForCP2.isPresent());
         assertEquals(cp2, lastTickerForCP2.get().getCurrencyPair());
         assertEquals(0, new BigDecimal("70").compareTo(lastTickerForCP2.get().getLast()));

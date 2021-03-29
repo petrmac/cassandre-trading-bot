@@ -7,9 +7,9 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import tech.cassandre.trading.bot.domain.Trade;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
+import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 
 import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 
@@ -35,7 +35,7 @@ public interface TradeMapper {
     @Mapping(target = "createdOn", ignore = true)
     @Mapping(target = "updatedOn", ignore = true)
     default CurrencyAmountDTO mapUserTradeToTradeDTOAmount(UserTrade source) {
-        CurrencyPairDTO cp = new CurrencyPairDTO(source.getInstrument());
+        CurrencyPair cp = CurrencyPair.forValue(source.getInstrument());
         return CurrencyAmountDTO.builder()
                 .value(source.getOriginalAmount())
                 .currency(cp.getBaseCurrency())
@@ -44,7 +44,7 @@ public interface TradeMapper {
 
     @Named("mapUserTradeToTradeDTOPrice")
     default CurrencyAmountDTO mapUserTradeToTradeDTOPrice(UserTrade source) {
-        CurrencyPairDTO cp = new CurrencyPairDTO(source.getInstrument());
+        CurrencyPair cp = CurrencyPair.forValue(source.getInstrument());
         return CurrencyAmountDTO.builder()
                 .value(source.getPrice())
                 .currency(cp.getQuoteCurrency())
@@ -56,7 +56,7 @@ public interface TradeMapper {
         if (source.getFeeAmount() != null && source.getFeeCurrency() != null) {
             return CurrencyAmountDTO.builder()
                     .value(source.getFeeAmount())
-                    .currency(new CurrencyDTO(source.getFeeCurrency().toString()))
+                    .currency(Currency.forString(source.getFeeCurrency().toString()))
                     .build();
         } else {
             return null;
@@ -69,11 +69,13 @@ public interface TradeMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdOn", ignore = true)
     @Mapping(target = "updatedOn", ignore = true)
+    @Mapping(source = "currencyPair", target = "currencyPair")
     @Mapping(target = "order", ignore = true)
     Trade mapToTrade(TradeDTO source);
 
     @Mapping(target = "createdOn", ignore = true)
     @Mapping(target = "updatedOn", ignore = true)
+    @Mapping(source = "currencyPair", target = "currencyPair")
     @Mapping(target = "order", ignore = true)
     void updateTrade(TradeDTO source, @MappingTarget Trade target);
 
@@ -81,5 +83,13 @@ public interface TradeMapper {
     // Domain to DTO.
 
     TradeDTO mapToTradeDTO(Trade source);
+
+    default String map(org.knowm.xchange.currency.Currency value){
+        return value.getCurrencyCode();
+    }
+
+    default String map(Currency value) {
+        return value.getCode();
+    }
 
 }

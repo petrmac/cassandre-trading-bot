@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
+import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.util.java.EqualsBuilder;
 
 import java.math.BigDecimal;
@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import static lombok.AccessLevel.PRIVATE;
 
 /**
- * DTO representing a balance in a {@link CurrencyDTO} for an {@link AccountDTO}.
+ * DTO representing a balance in a {@link Currency} for an {@link AccountDTO}.
  */
 @Value
 @Builder
@@ -21,7 +21,7 @@ import static lombok.AccessLevel.PRIVATE;
 public class BalanceDTO {
 
     /** Currency. */
-    CurrencyDTO currency;
+    Currency currency;
 
     /** Returns the total amount of the <code>CurrencyDTO</code> in this balance. */
     BigDecimal total;

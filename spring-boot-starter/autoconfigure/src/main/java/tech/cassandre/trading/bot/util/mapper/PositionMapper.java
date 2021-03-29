@@ -22,6 +22,10 @@ public interface PositionMapper {
     @Mapping(source = "rules.stopLossPercentage", target = "stopLossPercentageRule")
     @Mapping(target = "createdOn", ignore = true)
     @Mapping(target = "updatedOn", ignore = true)
+    @Mapping(source = "amount.currency", target = "amount.currency", qualifiedByName = "mapCurrencyToString")
+    @Mapping(source = "lowestGainPrice.currency", target = "lowestGainPrice.currency", qualifiedByName = "mapCurrencyToString")
+    @Mapping(source = "highestGainPrice.currency", target = "highestGainPrice.currency", qualifiedByName = "mapCurrencyToString")
+    @Mapping(source = "latestGainPrice.currency", target = "latestGainPrice.currency", qualifiedByName = "mapCurrencyToString")
     Position mapToPosition(PositionDTO source);
 
     @Mapping(target = "id", ignore = true)
@@ -31,6 +35,10 @@ public interface PositionMapper {
     @Mapping(target = "createdOn", ignore = true)
     @Mapping(target = "updatedOn", ignore = true)
     @Mapping(target = "strategy", ignore = true)
+    @Mapping(source = "amount.currency", target = "amount.currency", qualifiedByName = "mapCurrencyToString")
+    @Mapping(source = "lowestGainPrice.currency", target = "lowestGainPrice.currency", qualifiedByName = "mapCurrencyToString")
+    @Mapping(source = "highestGainPrice.currency", target = "highestGainPrice.currency", qualifiedByName = "mapCurrencyToString")
+    @Mapping(source = "latestGainPrice.currency", target = "latestGainPrice.currency", qualifiedByName = "mapCurrencyToString")
     void updatePosition(PositionDTO source, @MappingTarget Position target);
 
     // =================================================================================================================

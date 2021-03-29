@@ -11,9 +11,9 @@ import tech.cassandre.trading.bot.dto.strategy.StrategyDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderCreationResultDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
+import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.GainDTO;
 import tech.cassandre.trading.bot.repository.PositionRepository;
 import tech.cassandre.trading.bot.service.PositionService;
@@ -79,12 +79,12 @@ public class PositionServiceImplementation extends BaseService implements Positi
     }
 
     @Override
-    public final PositionCreationResultDTO createLongPosition(final StrategyDTO strategy, final CurrencyPairDTO currencyPair, final BigDecimal amount, final PositionRulesDTO rules) {
+    public final PositionCreationResultDTO createLongPosition(final StrategyDTO strategy, final CurrencyPair currencyPair, final BigDecimal amount, final PositionRulesDTO rules) {
         return createPosition(strategy, LONG, currencyPair, amount, rules);
     }
 
     @Override
-    public final PositionCreationResultDTO createShortPosition(final StrategyDTO strategy, final CurrencyPairDTO currencyPair, final BigDecimal amount, final PositionRulesDTO rules) {
+    public final PositionCreationResultDTO createShortPosition(final StrategyDTO strategy, final CurrencyPair currencyPair, final BigDecimal amount, final PositionRulesDTO rules) {
         return createPosition(strategy, SHORT, currencyPair, amount, rules);
     }
 
@@ -100,7 +100,7 @@ public class PositionServiceImplementation extends BaseService implements Positi
      */
     public final PositionCreationResultDTO createPosition(final StrategyDTO strategy,
                                                           final PositionTypeDTO type,
-                                                          final CurrencyPairDTO currencyPair,
+                                                          final CurrencyPair currencyPair,
                                                           final BigDecimal amount,
                                                           final PositionRulesDTO rules) {
         // Trying to create an order.
@@ -234,11 +234,11 @@ public class PositionServiceImplementation extends BaseService implements Positi
     }
 
     @Override
-    public final HashMap<CurrencyDTO, GainDTO> getGains() {
-        HashMap<CurrencyDTO, BigDecimal> totalBefore = new LinkedHashMap<>();
-        HashMap<CurrencyDTO, BigDecimal> totalAfter = new LinkedHashMap<>();
+    public final HashMap<Currency, GainDTO> getGains() {
+        HashMap<Currency, BigDecimal> totalBefore = new LinkedHashMap<>();
+        HashMap<Currency, BigDecimal> totalAfter = new LinkedHashMap<>();
         List<CurrencyAmountDTO> totalFees = new LinkedList<>();
-        HashMap<CurrencyDTO, GainDTO> gains = new LinkedHashMap<>();
+        HashMap<Currency, GainDTO> gains = new LinkedHashMap<>();
 
         // We calculate, by currency, the amount bought & sold.
         positionRepository.findByStatus(CLOSED)
@@ -246,7 +246,7 @@ public class PositionServiceImplementation extends BaseService implements Positi
                 .map(positionMapper::mapToPositionDTO)
                 .forEach(p -> {
                     // We retrieve the currency and initiate the maps if they are empty
-                    CurrencyDTO currency;
+                    Currency currency;
                     if (p.getType() == LONG) {
                         // LONG.
                         currency = p.getCurrencyPair().getQuoteCurrency();

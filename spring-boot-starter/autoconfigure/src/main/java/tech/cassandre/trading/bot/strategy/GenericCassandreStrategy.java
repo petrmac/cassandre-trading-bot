@@ -1,7 +1,7 @@
 package tech.cassandre.trading.bot.strategy;
 
 import org.mapstruct.factory.Mappers;
-import tech.cassandre.trading.bot.dto.market.TickerDTO;
+import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.position.PositionCreationResultDTO;
 import tech.cassandre.trading.bot.dto.position.PositionDTO;
 import tech.cassandre.trading.bot.dto.position.PositionRulesDTO;
@@ -12,9 +12,9 @@ import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
 import tech.cassandre.trading.bot.dto.user.AccountDTO;
 import tech.cassandre.trading.bot.dto.user.BalanceDTO;
+import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.GainDTO;
 import tech.cassandre.trading.bot.repository.OrderRepository;
 import tech.cassandre.trading.bot.repository.PositionRepository;
@@ -84,7 +84,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
     private final Map<Long, CurrencyAmountDTO> amountsLockedByPosition = new ConcurrentHashMap<>();
 
     /** Last ticker received. */
-    private final Map<CurrencyPairDTO, TickerDTO> lastTickers = new LinkedHashMap<>();
+    private final Map<CurrencyPair, Ticker> lastTickers = new LinkedHashMap<>();
 
     // =================================================================================================================
     // Internal methods to setup dependencies.
@@ -149,7 +149,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
     }
 
     @Override
-    public void tickerUpdate(final TickerDTO ticker) {
+    public void tickerUpdate(final Ticker ticker) {
         lastTickers.put(ticker.getCurrencyPair(), ticker);
         onTickerUpdate(ticker);
     }
@@ -232,7 +232,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @param currency currency
      * @return amount
      */
-    public final BigDecimal getAmountsLockedByCurrency(final CurrencyDTO currency) {
+    public final BigDecimal getAmountsLockedByCurrency(final Currency currency) {
         return amountsLockedByPosition.values()
                 .stream()
                 .filter(currencyAmount -> currencyAmount.getCurrency().equals(currency))
@@ -248,7 +248,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      *
      * @return ticker
      */
-    public final Map<CurrencyPairDTO, TickerDTO> getLastTickers() {
+    public final Map<CurrencyPair, Ticker> getLastTickers() {
         return lastTickers;
     }
 
@@ -258,11 +258,11 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @param currencyPair currency pair
      * @return last ticker received
      */
-    public final Optional<TickerDTO> getLastTickerByCurrencyPair(final String currencyPair) {
+    public final Optional<Ticker> getLastTickerByCurrencyPair(final String currencyPair) {
         if (currencyPair == null) {
             return Optional.empty();
         } else {
-            return getLastTickerByCurrencyPair(new CurrencyPairDTO(currencyPair));
+            return getLastTickerByCurrencyPair(CurrencyPair.forValue(currencyPair));
         }
     }
 
@@ -272,7 +272,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @param currencyPair currency pair
      * @return last ticker received
      */
-    public final Optional<TickerDTO> getLastTickerByCurrencyPair(final CurrencyPairDTO currencyPair) {
+    public final Optional<Ticker> getLastTickerByCurrencyPair(final CurrencyPair currencyPair) {
         if (currencyPair == null) {
             return Optional.empty();
         } else {
@@ -360,7 +360,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      *
      * @return total gains
      */
-    public final HashMap<CurrencyDTO, GainDTO> getGains() {
+    public final HashMap<Currency, GainDTO> getGains() {
         return positionService.getGains();
     }
 
@@ -374,7 +374,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @param amount       amount
      * @return order result (order id or error)
      */
-    public OrderCreationResultDTO createBuyMarketOrder(final CurrencyPairDTO currencyPair,
+    public OrderCreationResultDTO createBuyMarketOrder(final CurrencyPair currencyPair,
                                                        final BigDecimal amount) {
         return tradeService.createBuyMarketOrder(strategyDTO, currencyPair, amount);
     }
@@ -386,7 +386,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @param amount       amount
      * @return order result (order id or error)
      */
-    public OrderCreationResultDTO createSellMarketOrder(final CurrencyPairDTO currencyPair,
+    public OrderCreationResultDTO createSellMarketOrder(final CurrencyPair currencyPair,
                                                         final BigDecimal amount) {
         return tradeService.createSellMarketOrder(strategyDTO, currencyPair, amount);
     }
@@ -399,7 +399,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @param limitPrice   the highest acceptable price
      * @return order result (order id or error)
      */
-    public OrderCreationResultDTO createBuyLimitOrder(final CurrencyPairDTO currencyPair,
+    public OrderCreationResultDTO createBuyLimitOrder(final CurrencyPair currencyPair,
                                                       final BigDecimal amount,
                                                       final BigDecimal limitPrice) {
         return tradeService.createBuyLimitOrder(strategyDTO, currencyPair, amount, limitPrice);
@@ -413,7 +413,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @param limitPrice   the lowest acceptable price
      * @return order result (order id or error)
      */
-    public OrderCreationResultDTO createSellLimitOrder(final CurrencyPairDTO currencyPair,
+    public OrderCreationResultDTO createSellLimitOrder(final CurrencyPair currencyPair,
                                                        final BigDecimal amount,
                                                        final BigDecimal limitPrice) {
         return tradeService.createSellLimitOrder(strategyDTO, currencyPair, amount, limitPrice);
@@ -429,7 +429,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @param rules        rules
      * @return position creation result
      */
-    public PositionCreationResultDTO createLongPosition(final CurrencyPairDTO currencyPair,
+    public PositionCreationResultDTO createLongPosition(final CurrencyPair currencyPair,
                                                         final BigDecimal amount,
                                                         final PositionRulesDTO rules) {
         return positionService.createLongPosition(strategyDTO, currencyPair, amount, rules);
@@ -445,7 +445,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @param rules        rules
      * @return position creation result
      */
-    public PositionCreationResultDTO createShortPosition(final CurrencyPairDTO currencyPair,
+    public PositionCreationResultDTO createShortPosition(final CurrencyPair currencyPair,
                                                          final BigDecimal amount,
                                                          final PositionRulesDTO rules) {
         return positionService.createShortPosition(strategyDTO, currencyPair, amount, rules);
@@ -460,7 +460,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
     }
 
     @Override
-    public void onTickerUpdate(final TickerDTO ticker) {
+    public void onTickerUpdate(final Ticker ticker) {
 
     }
 
@@ -494,7 +494,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @param amount       amount
      * @return cost
      */
-    public final Optional<CurrencyAmountDTO> getEstimatedBuyingCost(final CurrencyPairDTO currencyPair, final BigDecimal amount) {
+    public final Optional<CurrencyAmountDTO> getEstimatedBuyingCost(final CurrencyPair currencyPair, final BigDecimal amount) {
         /*
             symbol=ETH-BTC
             {
@@ -511,7 +511,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
          */
 
         // We get the last ticker from the last values received.
-        final TickerDTO ticker = lastTickers.get(currencyPair);
+        final Ticker ticker = lastTickers.get(currencyPair);
         if (ticker == null) {
             // No ticker for this currency pair.
             return Optional.empty();
@@ -531,7 +531,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @param amount       amount
      * @return true if we there is enough assets to buy
      */
-    public final boolean canBuy(final CurrencyPairDTO currencyPair,
+    public final boolean canBuy(final CurrencyPair currencyPair,
                                 final BigDecimal amount) {
         final Optional<AccountDTO> tradeAccount = getTradeAccount(new LinkedHashSet<>(accounts.values()));
         return tradeAccount.filter(account -> canBuy(account, currencyPair, amount)).isPresent();
@@ -545,7 +545,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @param minimumBalanceAfter minimum balance that should be left after buying
      * @return true if we there is enough assets to buy
      */
-    public final boolean canBuy(final CurrencyPairDTO currencyPair,
+    public final boolean canBuy(final CurrencyPair currencyPair,
                                 final BigDecimal amount,
                                 final BigDecimal minimumBalanceAfter) {
         final Optional<AccountDTO> tradeAccount = getTradeAccount(new LinkedHashSet<>(accounts.values()));
@@ -561,7 +561,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @return true if we there is enough assets to buy
      */
     public final boolean canBuy(final AccountDTO account,
-                                final CurrencyPairDTO currencyPair,
+                                final CurrencyPair currencyPair,
                                 final BigDecimal amount) {
         return canBuy(account, currencyPair, amount, ZERO);
     }
@@ -576,7 +576,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @return true if we there is enough assets to buy
      */
     public final boolean canBuy(final AccountDTO account,
-                                final CurrencyPairDTO currencyPair,
+                                final CurrencyPair currencyPair,
                                 final BigDecimal amount,
                                 final BigDecimal minimumBalanceAfter) {
         // We get the amount.
@@ -609,7 +609,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @param amount   amount
      * @return true if we there is enough assets to sell
      */
-    public final boolean canSell(final CurrencyDTO currency,
+    public final boolean canSell(final Currency currency,
                                  final BigDecimal amount) {
         final Optional<AccountDTO> tradeAccount = getTradeAccount(new LinkedHashSet<>(accounts.values()));
         return tradeAccount.filter(account -> canSell(account, currency, amount)).isPresent();
@@ -623,7 +623,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @param minimumBalanceAfter minimum balance that should be left after selling
      * @return true if we there is enough assets to sell
      */
-    public final boolean canSell(final CurrencyDTO currency,
+    public final boolean canSell(final Currency currency,
                                  final BigDecimal amount,
                                  final BigDecimal minimumBalanceAfter) {
         final Optional<AccountDTO> tradeAccount = getTradeAccount(new LinkedHashSet<>(accounts.values()));
@@ -639,7 +639,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @return true if we there is enough assets to sell
      */
     public final boolean canSell(final AccountDTO account,
-                                 final CurrencyDTO currency,
+                                 final Currency currency,
                                  final BigDecimal amount) {
         return canSell(account, currency, amount, ZERO);
     }
@@ -654,7 +654,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @return true if we there is enough assets to sell
      */
     public final boolean canSell(final AccountDTO account,
-                                 final CurrencyDTO currency,
+                                 final Currency currency,
                                  final BigDecimal amount,
                                  final BigDecimal minimumBalanceAfter) {
         // We get the amount.

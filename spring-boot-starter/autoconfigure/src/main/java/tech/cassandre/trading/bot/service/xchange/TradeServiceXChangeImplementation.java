@@ -10,7 +10,7 @@ import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderTypeDTO;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.repository.OrderRepository;
 import tech.cassandre.trading.bot.service.TradeService;
 import tech.cassandre.trading.bot.util.base.service.BaseService;
@@ -72,7 +72,7 @@ public class TradeServiceXChangeImplementation extends BaseService implements Tr
      */
     private OrderCreationResultDTO createMarketOrder(final StrategyDTO strategy,
                                                      final OrderTypeDTO orderTypeDTO,
-                                                     final CurrencyPairDTO currencyPair,
+                                                     final CurrencyPair currencyPair,
                                                      final BigDecimal amount) {
         try {
             // Making the order.
@@ -119,7 +119,7 @@ public class TradeServiceXChangeImplementation extends BaseService implements Tr
      */
     private OrderCreationResultDTO createLimitOrder(final StrategyDTO strategy,
                                                     final OrderTypeDTO orderTypeDTO,
-                                                    final CurrencyPairDTO currencyPair,
+                                                    final CurrencyPair currencyPair,
                                                     final BigDecimal amount,
                                                     final BigDecimal limitPrice) {
         try {
@@ -163,22 +163,22 @@ public class TradeServiceXChangeImplementation extends BaseService implements Tr
     }
 
     @Override
-    public final OrderCreationResultDTO createBuyMarketOrder(final StrategyDTO strategy, final CurrencyPairDTO currencyPair, final BigDecimal amount) {
+    public final OrderCreationResultDTO createBuyMarketOrder(final StrategyDTO strategy, final CurrencyPair currencyPair, final BigDecimal amount) {
         return createMarketOrder(strategy, BID, currencyPair, amount);
     }
 
     @Override
-    public final OrderCreationResultDTO createSellMarketOrder(final StrategyDTO strategy, final CurrencyPairDTO currencyPair, final BigDecimal amount) {
+    public final OrderCreationResultDTO createSellMarketOrder(final StrategyDTO strategy, final CurrencyPair currencyPair, final BigDecimal amount) {
         return createMarketOrder(strategy, ASK, currencyPair, amount);
     }
 
     @Override
-    public final OrderCreationResultDTO createBuyLimitOrder(final StrategyDTO strategy, final CurrencyPairDTO currencyPair, final BigDecimal amount, final BigDecimal limitPrice) {
+    public final OrderCreationResultDTO createBuyLimitOrder(final StrategyDTO strategy, final CurrencyPair currencyPair, final BigDecimal amount, final BigDecimal limitPrice) {
         return createLimitOrder(strategy, BID, currencyPair, amount, limitPrice);
     }
 
     @Override
-    public final OrderCreationResultDTO createSellLimitOrder(final StrategyDTO strategy, final CurrencyPairDTO currencyPair, final BigDecimal amount, final BigDecimal limitPrice) {
+    public final OrderCreationResultDTO createSellLimitOrder(final StrategyDTO strategy, final CurrencyPair currencyPair, final BigDecimal amount, final BigDecimal limitPrice) {
         return createLimitOrder(strategy, ASK, currencyPair, amount, limitPrice);
     }
 
@@ -244,7 +244,7 @@ public class TradeServiceXChangeImplementation extends BaseService implements Tr
     }
 
     @Override
-    public final Set<TradeDTO> getTrades(final Set<CurrencyPairDTO> currencyPairs) {
+    public final Set<TradeDTO> getTrades(final Set<CurrencyPair> currencyPairs) {
         logger.debug("TradeService - Getting trades from exchange");
         // Query trades from the last 24 jours (24 hours because of Binance).
         TradeHistoryParamsAll params = new TradeHistoryParamsAll();

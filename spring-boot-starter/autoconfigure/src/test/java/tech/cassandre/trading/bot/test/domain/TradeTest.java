@@ -16,7 +16,7 @@ import tech.cassandre.trading.bot.dto.strategy.StrategyDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.repository.OrderRepository;
 import tech.cassandre.trading.bot.repository.StrategyRepository;
 import tech.cassandre.trading.bot.repository.TradeRepository;
@@ -88,7 +88,7 @@ public class TradeTest extends BaseTest {
         assertEquals("BACKUP_TRADE_01", t.get().getTradeId());
         assertEquals(BID, t.get().getType());
         assertEquals("BACKUP_OPENING_ORDER_02", t.get().getOrderId());
-        assertEquals(new CurrencyPairDTO(BTC, USDT), t.get().getCurrencyPair());
+        assertEquals(CurrencyPair.forValues(BTC, USDT), t.get().getCurrencyPair());
         assertEquals(0, new BigDecimal("20").compareTo(t.get().getAmount().getValue()));
         assertEquals(BTC, t.get().getAmount().getCurrency());
         assertEquals(0, new BigDecimal("10").compareTo(t.get().getPrice().getValue()));
@@ -111,7 +111,7 @@ public class TradeTest extends BaseTest {
         assertEquals("BACKUP_TRADE_02", t.get().getTradeId());
         assertEquals(BID, t.get().getType());
         assertEquals("BACKUP_OPENING_ORDER_03", t.get().getOrderId());
-        assertEquals(new CurrencyPairDTO(BTC, USDT), t.get().getCurrencyPair());
+        assertEquals(CurrencyPair.forValues(BTC, USDT), t.get().getCurrencyPair());
         assertEquals(0, new BigDecimal("20").compareTo(t.get().getAmount().getValue()));
         assertEquals(BTC, t.get().getAmount().getCurrency());
         assertEquals(0, new BigDecimal("20").compareTo(t.get().getPrice().getValue()));
@@ -129,7 +129,7 @@ public class TradeTest extends BaseTest {
         assertEquals("BACKUP_TRADE_03", t.get().getTradeId());
         assertEquals(BID, t.get().getType());
         assertEquals("BACKUP_OPENING_ORDER_04", t.get().getOrderId());
-        assertEquals(new CurrencyPairDTO(BTC, USDT), t.get().getCurrencyPair());
+        assertEquals(CurrencyPair.forValues(BTC, USDT), t.get().getCurrencyPair());
         assertEquals(0, new BigDecimal("40").compareTo(t.get().getAmount().getValue()));
         assertEquals(BTC, t.get().getAmount().getCurrency());
         assertEquals(0, new BigDecimal("30").compareTo(t.get().getPrice().getValue()));
@@ -147,7 +147,7 @@ public class TradeTest extends BaseTest {
         assertEquals("BACKUP_TRADE_04", t.get().getTradeId());
         assertEquals(ASK, t.get().getType());
         assertEquals("BACKUP_CLOSING_ORDER_01", t.get().getOrderId());
-        assertEquals(new CurrencyPairDTO(BTC, USDT), t.get().getCurrencyPair());
+        assertEquals(CurrencyPair.forValues(BTC, USDT), t.get().getCurrencyPair());
         assertEquals(0, new BigDecimal("20").compareTo(t.get().getAmount().getValue()));
         assertEquals(BTC, t.get().getAmount().getCurrency());
         assertEquals(0, new BigDecimal("40").compareTo(t.get().getPrice().getValue()));
@@ -165,7 +165,7 @@ public class TradeTest extends BaseTest {
         assertEquals("BACKUP_TRADE_05", t.get().getTradeId());
         assertEquals(ASK, t.get().getType());
         assertEquals("BACKUP_CLOSING_ORDER_02", t.get().getOrderId());
-        assertEquals(new CurrencyPairDTO(ETH, USD), t.get().getCurrencyPair());
+        assertEquals(CurrencyPair.forValues(ETH, USD), t.get().getCurrencyPair());
         assertEquals(0, new BigDecimal("50").compareTo(t.get().getAmount().getValue()));
         assertEquals(ETH, t.get().getAmount().getCurrency());
         assertEquals(0, new BigDecimal("50").compareTo(t.get().getPrice().getValue()));

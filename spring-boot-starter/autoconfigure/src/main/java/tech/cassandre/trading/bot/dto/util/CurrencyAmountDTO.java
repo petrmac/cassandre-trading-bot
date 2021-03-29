@@ -15,7 +15,7 @@ import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.BTC;
 @Value
 @Builder
 @SuppressWarnings("checkstyle:VisibilityModifier")
-public class CurrencyAmountDTO {
+public class CurrencyAmountDTO implements CurrencyAmount {
 
     /** Zero. */
     public static final CurrencyAmountDTO ZERO = CurrencyAmountDTO.builder()
@@ -27,7 +27,7 @@ public class CurrencyAmountDTO {
     BigDecimal value;
 
     /** Currency. */
-    CurrencyDTO currency;
+    Currency currency;
 
     /**
      * Constructor.
@@ -51,7 +51,7 @@ public class CurrencyAmountDTO {
      * @param newValue    amount value
      * @param newCurrency amount currency
      */
-    public CurrencyAmountDTO(final BigDecimal newValue, final CurrencyDTO newCurrency) {
+    public CurrencyAmountDTO(final BigDecimal newValue, final Currency newCurrency) {
         if (newValue != null && newCurrency != null) {
             this.value = newValue;
             this.currency = newCurrency;

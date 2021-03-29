@@ -4,7 +4,7 @@ import tech.cassandre.trading.bot.dto.strategy.StrategyDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderCreationResultDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -23,7 +23,7 @@ public interface TradeService {
      * @return order result (order id or error)
      */
     OrderCreationResultDTO createBuyMarketOrder(StrategyDTO strategy,
-                                                CurrencyPairDTO currencyPair,
+                                                CurrencyPair currencyPair,
                                                 BigDecimal amount);
 
     /**
@@ -35,7 +35,7 @@ public interface TradeService {
      * @return order result (order id or error)
      */
     OrderCreationResultDTO createSellMarketOrder(StrategyDTO strategy,
-                                                 CurrencyPairDTO currencyPair,
+                                                 CurrencyPair currencyPair,
                                                  BigDecimal amount);
 
     /**
@@ -48,7 +48,7 @@ public interface TradeService {
      * @return order result (order id or error)
      */
     OrderCreationResultDTO createBuyLimitOrder(StrategyDTO strategy,
-                                               CurrencyPairDTO currencyPair,
+                                               CurrencyPair currencyPair,
                                                BigDecimal amount,
                                                BigDecimal limitPrice);
 
@@ -62,7 +62,7 @@ public interface TradeService {
      * @return order result (order id or error)
      */
     OrderCreationResultDTO createSellLimitOrder(StrategyDTO strategy,
-                                                CurrencyPairDTO currencyPair,
+                                                CurrencyPair currencyPair,
                                                 BigDecimal amount,
                                                 BigDecimal limitPrice);
 
@@ -96,6 +96,6 @@ public interface TradeService {
      * @param currencyPairs currency pairs
      * @return list of orders
      */
-    Set<TradeDTO> getTrades(Set<CurrencyPairDTO> currencyPairs);
+    Set<TradeDTO> getTrades(Set<CurrencyPair> currencyPairs);
 
 }

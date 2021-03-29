@@ -5,9 +5,9 @@ import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeriesBuilder;
 import org.ta4j.core.Strategy;
 import org.ta4j.core.num.DoubleNum;
-import tech.cassandre.trading.bot.dto.market.TickerDTO;
+import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.user.AccountDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -51,7 +51,7 @@ public abstract class BasicTa4jCassandreStrategy extends GenericCassandreStrateg
      *
      * @return the list of currency pairs tickers your want to receive
      */
-    public abstract CurrencyPairDTO getRequestedCurrencyPair();
+    public abstract CurrencyPair getRequestedCurrencyPair();
 
     /**
      * Implements this method to tell the bot how many bars you want to keep in your bar series.
@@ -76,13 +76,13 @@ public abstract class BasicTa4jCassandreStrategy extends GenericCassandreStrateg
     public abstract Strategy getStrategy();
 
     @Override
-    public final Set<CurrencyPairDTO> getRequestedCurrencyPairs() {
+    public final Set<CurrencyPair> getRequestedCurrencyPairs() {
         // We only support one currency pair with BasicTa4jCassandreStrategy.
         return Set.of(getRequestedCurrencyPair());
     }
 
     @Override
-    public final void tickerUpdate(final TickerDTO ticker) {
+    public final void tickerUpdate(final Ticker ticker) {
         getLastTickers().put(ticker.getCurrencyPair(), ticker);
         // If there is no bar or if the duration between the last bar and the ticker is enough.
         if (lastAddedBarTimestamp == null

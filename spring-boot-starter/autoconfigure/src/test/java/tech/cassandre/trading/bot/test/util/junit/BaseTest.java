@@ -1,8 +1,7 @@
 package tech.cassandre.trading.bot.test.util.junit;
 
 import org.awaitility.Awaitility;
-import org.knowm.xchange.currency.Currency;
-import org.knowm.xchange.currency.CurrencyPair;
+import org.knowm.xchange.instrument.Instrument;
 import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +9,9 @@ import tech.cassandre.trading.bot.dto.market.TickerDTO;
 import tech.cassandre.trading.bot.dto.strategy.StrategyDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderTypeDTO;
+import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.util.mapper.AccountMapper;
 import tech.cassandre.trading.bot.util.mapper.CurrencyMapper;
 import tech.cassandre.trading.bot.util.mapper.OrderMapper;
@@ -36,10 +36,10 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.pollinterval.FibonacciPollInterval.fibonacci;
 import static tech.cassandre.trading.bot.dto.strategy.StrategyTypeDTO.BASIC_STRATEGY;
 import static tech.cassandre.trading.bot.dto.trade.OrderStatusDTO.PENDING_NEW;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.BTC;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.ETH;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.KCS;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.USDT;
+import static tech.cassandre.trading.bot.dto.util.Currency.BTC;
+import static tech.cassandre.trading.bot.dto.util.Currency.ETH;
+import static tech.cassandre.trading.bot.dto.util.Currency.KCS;
+import static tech.cassandre.trading.bot.dto.util.Currency.USDT;
 
 /**
  * Base for tests.
@@ -81,34 +81,34 @@ public class BaseTest {
     protected final PositionMapper positionMapper = Mappers.getMapper(PositionMapper.class);
 
     /** cp1 for tests. */
-    protected final CurrencyPairDTO cp1 = new CurrencyPairDTO(ETH, BTC);
+    protected final tech.cassandre.trading.bot.dto.util.CurrencyPair cp1 = tech.cassandre.trading.bot.dto.util.CurrencyPair.forValues(ETH, BTC);
 
     /** XChange cp1 for tests. */
-    protected final CurrencyPair xChangeCP1 = new CurrencyPair(Currency.ETH, Currency.BTC);
+    protected final org.knowm.xchange.currency.CurrencyPair xChangeCP1 = new org.knowm.xchange.currency.CurrencyPair(org.knowm.xchange.currency.Currency.ETH, org.knowm.xchange.currency.Currency.BTC);
 
     /** cp2 for tests. */
-    protected final CurrencyPairDTO cp2 = new CurrencyPairDTO(ETH, USDT);
+    protected final CurrencyPair cp2 = CurrencyPair.forValues(ETH, USDT);
 
     /** XChange cp2 for tests. */
-    protected final CurrencyPair xChangeCP2 = new CurrencyPair(Currency.ETH, Currency.USDT);
+    protected final CurrencyPair xChangeCP2 = CurrencyPair.forValues(Currency.ETH, Currency.USDT);
 
     /** cp3 for tests. */
-    protected final CurrencyPairDTO cp3 = new CurrencyPairDTO(BTC, USDT);
+    protected final tech.cassandre.trading.bot.dto.util.CurrencyPair cp3 = tech.cassandre.trading.bot.dto.util.CurrencyPair.forValues(BTC, USDT);
 
     /** XChange cp2 for tests. */
-    protected final CurrencyPair xChangeCP3 = new CurrencyPair(Currency.BTC, Currency.USDT);
+    protected final CurrencyPair xChangeCP3 = CurrencyPair.forValues(Currency.BTC, Currency.USDT);
 
     /** cp4 for tests. */
-    protected final CurrencyPairDTO cp4 = new CurrencyPairDTO(KCS, USDT);
+    protected final CurrencyPair cp4 = CurrencyPair.forValues(KCS, USDT);
 
     /** XChange cp4 for tests. */
-    protected final CurrencyPair xChangeCP4 = new CurrencyPair(Currency.KCS, Currency.USDT);
+    protected final CurrencyPair xChangeCP4 = CurrencyPair.forValues(Currency.KCS, Currency.USDT);
 
     /** cp5 for tests. */
-    protected final CurrencyPairDTO cp5 = new CurrencyPairDTO(BTC, ETH);
+    protected final CurrencyPair cp5 = CurrencyPair.forValues(BTC, ETH);
 
     /** XChange cp5 for tests. */
-    protected final CurrencyPair xChangeCP5 = new CurrencyPair(Currency.BTC, Currency.ETH);
+    protected final CurrencyPair xChangeCP5 = CurrencyPair.forValues(Currency.BTC, Currency.ETH);
 
     /** Ten seconds wait. */
     protected static final long WAITING_TIME_IN_SECONDS = 5L;
@@ -139,7 +139,7 @@ public class BaseTest {
                                        final String orderId,
                                        final OrderTypeDTO orderTypeDTO,
                                        final BigDecimal amount,
-                                       final CurrencyPairDTO currencyPair) {
+                                       final CurrencyPair currencyPair) {
         return OrderDTO.builder()
                 .orderId(orderId)
                 .type(orderTypeDTO)
@@ -158,7 +158,7 @@ public class BaseTest {
      * @param bid bid price
      * @return ticket
      */
-    protected static Optional<TickerDTO> getFakeTicker(final CurrencyPairDTO cp, final BigDecimal bid) {
+    protected static Optional<TickerDTO> getFakeTicker(final CurrencyPair cp, final BigDecimal bid) {
         return Optional.of(TickerDTO.builder()
                 .currencyPair(cp)
                 .timestamp(getRandomDate())

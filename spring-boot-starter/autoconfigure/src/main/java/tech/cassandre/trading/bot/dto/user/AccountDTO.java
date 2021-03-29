@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
+import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.util.java.EqualsBuilder;
 
 import java.util.Map;
@@ -35,7 +35,7 @@ public class AccountDTO {
 
     /** Represents the different balances for each currency owned by the account. */
     @Singular
-    Map<CurrencyDTO, BalanceDTO> balances;
+    Map<Currency, BalanceDTO> balances;
 
     /**
      * Returns balance of a currency.
@@ -44,11 +44,11 @@ public class AccountDTO {
      * @return balance
      */
     public Optional<BalanceDTO> getBalance(final String currencyCode) {
-        CurrencyDTO currency = CurrencyDTO.getInstanceNoCreate(currencyCode);
+        Currency currency = Currency.forString(currencyCode);
         if (currency == null) {
             return Optional.empty();
         } else {
-            return getBalance(CurrencyDTO.getInstanceNoCreate(currencyCode));
+            return getBalance(Currency.forString(currencyCode));
         }
     }
 
@@ -58,7 +58,7 @@ public class AccountDTO {
      * @param currency currency
      * @return balance
      */
-    public Optional<BalanceDTO> getBalance(final CurrencyDTO currency) {
+    public Optional<BalanceDTO> getBalance(final Currency currency) {
         return Optional.ofNullable(balances.get(currency));
     }
 
@@ -81,7 +81,7 @@ public class AccountDTO {
         // Tests balances.
         if (equals) {
             // Testing balances.
-            for (Map.Entry<CurrencyDTO, BalanceDTO> balance : balances.entrySet()) {
+            for (Map.Entry<Currency, BalanceDTO> balance : balances.entrySet()) {
                 Optional<BalanceDTO> balanceValue = that.getBalance(balance.getKey());
                 // Checking that the list of currencies exists.
                 if (balanceValue.isEmpty()) {

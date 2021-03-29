@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import tech.cassandre.trading.bot.dto.position.PositionDTO;
+import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
 import tech.cassandre.trading.bot.dto.util.GainDTO;
 import tech.cassandre.trading.bot.service.PositionService;
@@ -44,7 +45,7 @@ public class Issue510 extends BaseTest {
     @Test
     @DisplayName("Fix empty openingOrder or closing order")
     public void checkEmptyOrderFix() {
-        final HashMap<CurrencyDTO, GainDTO> gains = positionService.getGains();
+        final HashMap<Currency, GainDTO> gains = positionService.getGains();
 
         // Check fees in position 6 (they must be in USDT in Kucoin data).
         final Optional<PositionDTO> position = strategy.getPositionByPositionId(6);

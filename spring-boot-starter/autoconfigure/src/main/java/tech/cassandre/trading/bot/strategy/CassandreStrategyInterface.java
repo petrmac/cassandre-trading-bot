@@ -1,12 +1,12 @@
 package tech.cassandre.trading.bot.strategy;
 
-import tech.cassandre.trading.bot.dto.market.TickerDTO;
+import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.position.PositionDTO;
 import tech.cassandre.trading.bot.dto.strategy.StrategyDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
 import tech.cassandre.trading.bot.dto.user.AccountDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.repository.OrderRepository;
 import tech.cassandre.trading.bot.repository.PositionRepository;
 import tech.cassandre.trading.bot.repository.TradeRepository;
@@ -77,7 +77,7 @@ public interface CassandreStrategyInterface {
      *
      * @param ticker ticker
      */
-    void tickerUpdate(TickerDTO ticker);
+    void tickerUpdate(Ticker ticker);
 
     /**
      * Method called by streams on every order update.
@@ -105,7 +105,7 @@ public interface CassandreStrategyInterface {
      *
      * @return the list of currency pairs tickers your want to receive
      */
-    Set<CurrencyPairDTO> getRequestedCurrencyPairs();
+    Set<CurrencyPair> getRequestedCurrencyPairs();
 
     /**
      * Implements this method to tell the bot which account from the accounts you own is the trading one.
@@ -134,7 +134,7 @@ public interface CassandreStrategyInterface {
      *
      * @param ticker ticker
      */
-    void onTickerUpdate(TickerDTO ticker);
+    void onTickerUpdate(Ticker ticker);
 
     /**
      * Method triggered on every order update.

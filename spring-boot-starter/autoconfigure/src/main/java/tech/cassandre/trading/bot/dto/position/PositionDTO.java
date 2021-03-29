@@ -9,9 +9,9 @@ import tech.cassandre.trading.bot.dto.market.TickerDTO;
 import tech.cassandre.trading.bot.dto.strategy.StrategyDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
+import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.GainDTO;
 import tech.cassandre.trading.bot.util.exception.PositionException;
 import tech.cassandre.trading.bot.util.java.EqualsBuilder;
@@ -59,7 +59,7 @@ public class PositionDTO {
     private final StrategyDTO strategy;
 
     /** Currency pair. */
-    private final CurrencyPairDTO currencyPair;
+    private final CurrencyPair currencyPair;
 
     /** Amount that was ordered. */
     private final CurrencyAmountDTO amount;
@@ -117,7 +117,7 @@ public class PositionDTO {
     public PositionDTO(final long newId,
                        final PositionTypeDTO newType,
                        final StrategyDTO newStrategy,
-                       final CurrencyPairDTO newCurrencyPair,
+                       final CurrencyPair newCurrencyPair,
                        final BigDecimal newAmount,
                        final String newOpenOrderId,
                        final PositionRulesDTO newRules) {
@@ -297,7 +297,7 @@ public class PositionDTO {
             calculatedGain.ifPresent(gain -> {
                 final CurrencyAmountDTO price = CurrencyAmountDTO.builder()
                         .value(ticker.getLast())
-                        .currency(ticker.getQuoteCurrency())
+                        .currency(ticker.getQuoteCurrency().orElseGet(null))
                         .build();
 
                 // We save the last calculated gain.
@@ -494,7 +494,7 @@ public class PositionDTO {
                 BigDecimal fees = Stream.concat(openingOrder.getTrades().stream(), closingOrder.getTrades().stream())
                         .map(t -> t.getFee().getValue())
                         .reduce(ZERO, BigDecimal::add);
-                CurrencyDTO feeCurrency;
+                Currency feeCurrency;
                 final Optional<TradeDTO> firstTrade = Stream.concat(openingOrder.getTrades().stream(), closingOrder.getTrades().stream()).findFirst();
                 if (firstTrade.isPresent()) {
                     feeCurrency = firstTrade.get().getFee().getCurrency();
@@ -535,7 +535,7 @@ public class PositionDTO {
                 BigDecimal fees = Stream.concat(openingOrder.getTrades().stream(), closingOrder.getTrades().stream())
                         .map(t -> t.getFee().getValue())
                         .reduce(ZERO, BigDecimal::add);
-                CurrencyDTO feeCurrency;
+                Currency feeCurrency;
                 final Optional<TradeDTO> firstTrade = Stream.concat(openingOrder.getTrades().stream(), closingOrder.getTrades().stream()).findFirst();
                 if (firstTrade.isPresent()) {
                     feeCurrency = firstTrade.get().getFee().getCurrency();

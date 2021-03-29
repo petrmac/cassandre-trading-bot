@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.util.java.EqualsBuilder;
 
 import java.math.BigDecimal;
@@ -22,10 +21,10 @@ import static lombok.AccessLevel.PRIVATE;
 @Builder
 @AllArgsConstructor(access = PRIVATE)
 @SuppressWarnings("checkstyle:VisibilityModifier")
-public class TickerDTO {
+public class TickerDTO implements Ticker {
 
     /** Currency pair. */
-    CurrencyPairDTO currencyPair;
+    CurrencyPair currencyPair;
 
     /** The opening price is the first trade price that was recorded during the day’s trading. */
     BigDecimal open;
@@ -62,32 +61,6 @@ public class TickerDTO {
 
     /** Information timestamp. */
     ZonedDateTime timestamp;
-
-    /**
-     * Returns base currency.
-     *
-     * @return base currency
-     */
-    public CurrencyDTO getBaseCurrency() {
-        if (currencyPair != null) {
-            return currencyPair.getBaseCurrency();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns quote currency.
-     *
-     * @return quote currency
-     */
-    public CurrencyDTO getQuoteCurrency() {
-        if (currencyPair != null) {
-            return currencyPair.getQuoteCurrency();
-        } else {
-            return null;
-        }
-    }
 
     /**
      * Getter timestamp.

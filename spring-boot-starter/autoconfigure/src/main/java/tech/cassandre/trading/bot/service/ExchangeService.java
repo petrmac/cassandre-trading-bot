@@ -1,6 +1,6 @@
 package tech.cassandre.trading.bot.service;
 
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 
 import java.util.Set;
 
@@ -14,6 +14,6 @@ public interface ExchangeService {
      *
      * @return list of currency pairs
      */
-    Set<CurrencyPairDTO> getAvailableCurrencyPairs();
+    Set<CurrencyPair> getAvailableCurrencyPairs();
 
 }

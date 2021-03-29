@@ -1,8 +1,8 @@
 package tech.cassandre.trading.bot.test.strategy;
 
-import tech.cassandre.trading.bot.dto.market.TickerDTO;
+import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.user.AccountDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.strategy.BasicCassandreStrategy;
 import tech.cassandre.trading.bot.strategy.CassandreStrategy;
 
@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.BTC;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.ETH;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.USDT;
+import static tech.cassandre.trading.bot.dto.util.Currency.BTC;
+import static tech.cassandre.trading.bot.dto.util.Currency.ETH;
+import static tech.cassandre.trading.bot.dto.util.Currency.USDT;
 
 /**
  * Testable strategy.
@@ -24,13 +24,13 @@ import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.USDT;
 public final class TestableStrategy extends BasicCassandreStrategy {
 
     /** Tickers update received. */
-    private final List<TickerDTO> tickersUpdateReceived = new LinkedList<>();
+    private final List<Ticker> tickersUpdateReceived = new LinkedList<>();
 
     @Override
-    public Set<CurrencyPairDTO> getRequestedCurrencyPairs() {
-        Set<CurrencyPairDTO> list = new LinkedHashSet<>();
-        list.add(new CurrencyPairDTO(BTC, USDT));
-        list.add(new CurrencyPairDTO(ETH, BTC));
+    public Set<CurrencyPair> getRequestedCurrencyPairs() {
+        Set<CurrencyPair> list = new LinkedHashSet<>();
+        list.add(CurrencyPair.forValues(BTC, USDT));
+        list.add(CurrencyPair.forValues(ETH, BTC));
         return list;
     }
 
@@ -40,7 +40,7 @@ public final class TestableStrategy extends BasicCassandreStrategy {
     }
 
     @Override
-    public void onTickerUpdate(TickerDTO ticker) {
+    public void onTickerUpdate(Ticker ticker) {
         tickersUpdateReceived.add(ticker);
     }
 
@@ -49,7 +49,7 @@ public final class TestableStrategy extends BasicCassandreStrategy {
      *
      * @return tickersUpdateReceived
      */
-    public final List<TickerDTO> getTickersUpdateReceived() {
+    public final List<Ticker> getTickersUpdateReceived() {
         return tickersUpdateReceived;
     }
 

@@ -1,12 +1,12 @@
 package tech.cassandre.trading.bot.util.mapper;
 
-import org.knowm.xchange.currency.Currency;
-import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.instrument.Instrument;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 import tech.cassandre.trading.bot.util.jpa.CurrencyAmount;
 
@@ -19,7 +19,7 @@ public interface CurrencyMapper {
     // =================================================================================================================
     // XChange to DTO.
 
-    default String mapToCurrencyString(CurrencyDTO source) {
+    default String mapToCurrencyString(org.knowm.xchange.currency.Currency source) {
         if (source != null) {
             return source.toString();
         } else {
@@ -27,31 +27,29 @@ public interface CurrencyMapper {
         }
     }
 
-    default CurrencyDTO mapToCurrencyDTO(String value) {
-        return new CurrencyDTO(value);
+    default Currency mapToCurrencyDTO(String value) {
+        return Currency.forString(value);
     }
 
     @Mapping(source = "currencyCode", target = "code")
-    CurrencyDTO mapToCurrencyDTO(Currency source);
+    CurrencyDTO mapToCurrencyDTO(org.knowm.xchange.currency.Currency source);
 
-    default String mapToCurrencyPairString(CurrencyPairDTO source) {
+    default String mapToCurrencyPairString(CurrencyPair source) {
         return source.toString();
     }
 
-    default CurrencyPairDTO mapToCurrencyPairDTO(Instrument source) {
-        final CurrencyPair cp = (CurrencyPair) source;
-        CurrencyDTO base = new CurrencyDTO(cp.base.getCurrencyCode());
-        CurrencyDTO quote = new CurrencyDTO(cp.counter.getCurrencyCode());
-        return CurrencyPairDTO.builder().baseCurrency(base).quoteCurrency(quote).build();
+    default CurrencyPair mapToCurrencyPairDTO(Instrument source) {
+        final org.knowm.xchange.currency.CurrencyPair cp = (org.knowm.xchange.currency.CurrencyPair) source;
+        return CurrencyPair.forValues(cp.base.getCurrencyCode(), cp.counter.getCurrencyCode());
     }
 
-    default CurrencyPairDTO mapToCurrencyPairDTO(String source) {
-        return new CurrencyPairDTO(source);
+    default CurrencyPair mapToCurrencyPairDTO(String source) {
+        return CurrencyPair.forValue(source);
     }
 
     @Mapping(source = "base", target = "baseCurrency")
     @Mapping(source = "counter", target = "quoteCurrency")
-    CurrencyPairDTO mapToCurrencyPairDTO(CurrencyPair source);
+    CurrencyPairDTO mapToCurrencyPairDTO(org.knowm.xchange.currency.CurrencyPair source);
 
     @Mapping(source = "value", target = "value")
     @Mapping(source = "currency", target = "currency")
@@ -60,8 +58,8 @@ public interface CurrencyMapper {
     // =================================================================================================================
     // XChange to DTO.
 
-    default CurrencyPair mapToCurrencyPair(CurrencyPairDTO source) {
-        return new CurrencyPair(source.getBaseCurrency().getCode(), source.getQuoteCurrency().getCode());
+    default org.knowm.xchange.currency.CurrencyPair mapToCurrencyPair(CurrencyPair source) {
+        return new org.knowm.xchange.currency.CurrencyPair(source.getBaseCurrency().getCode(), source.getQuoteCurrency().getCode());
     }
 
 }

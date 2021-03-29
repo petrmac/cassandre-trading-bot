@@ -1,8 +1,9 @@
 package tech.cassandre.trading.bot.batch;
 
 import com.google.common.collect.Iterators;
+import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.market.TickerDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.service.MarketService;
 import tech.cassandre.trading.bot.util.base.batch.BaseExternalFlux;
 
@@ -22,10 +23,10 @@ public class TickerFlux extends BaseExternalFlux<TickerDTO> {
     private final MarketService marketService;
 
     /** Cycle iterator over requested currency pairs. */
-    private Iterator<CurrencyPairDTO> currencyPairsIterator;
+    private Iterator<CurrencyPair> currencyPairsIterator;
 
     /** Previous values. */
-    private final Map<CurrencyPairDTO, TickerDTO> previousValues = new LinkedHashMap<>();
+    private final Map<CurrencyPair, Ticker> previousValues = new LinkedHashMap<>();
 
     /**
      * Constructor.
@@ -41,7 +42,7 @@ public class TickerFlux extends BaseExternalFlux<TickerDTO> {
      *
      * @param requestedCurrencyPairs list of requested currency pairs.
      */
-    public void updateRequestedCurrencyPairs(final Set<CurrencyPairDTO> requestedCurrencyPairs) {
+    public void updateRequestedCurrencyPairs(final Set<CurrencyPair> requestedCurrencyPairs) {
         currencyPairsIterator = Iterators.cycle(requestedCurrencyPairs);
     }
 

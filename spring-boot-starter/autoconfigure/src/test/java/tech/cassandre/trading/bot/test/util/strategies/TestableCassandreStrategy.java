@@ -3,12 +3,12 @@ package tech.cassandre.trading.bot.test.util.strategies;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import tech.cassandre.trading.bot.dto.market.TickerDTO;
+import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.position.PositionDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
 import tech.cassandre.trading.bot.dto.user.AccountDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.strategy.BasicCassandreStrategy;
 import tech.cassandre.trading.bot.strategy.CassandreStrategy;
 
@@ -19,9 +19,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.BTC;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.ETH;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.USDT;
+import static tech.cassandre.trading.bot.dto.util.Currency.BTC;
+import static tech.cassandre.trading.bot.dto.util.Currency.ETH;
+import static tech.cassandre.trading.bot.dto.util.Currency.USDT;
 import static tech.cassandre.trading.bot.test.util.strategies.TestableCassandreStrategy.PARAMETER_TESTABLE_STRATEGY_ENABLED;
 
 /**
@@ -49,7 +49,7 @@ public class TestableCassandreStrategy extends BasicCassandreStrategy {
     private final List<AccountDTO> accountsUpdateReceived = new LinkedList<>();
 
     /** Tickers update received. */
-    private final List<TickerDTO> tickersUpdateReceived = new LinkedList<>();
+    private final List<Ticker> tickersUpdateReceived = new LinkedList<>();
 
     /** Orders update received. */
     private final List<OrderDTO> ordersUpdateReceived = new LinkedList<>();
@@ -64,10 +64,10 @@ public class TestableCassandreStrategy extends BasicCassandreStrategy {
     private final List<PositionDTO> positionsStatusUpdateReceived = new LinkedList<>();
 
     @Override
-    public final Set<CurrencyPairDTO> getRequestedCurrencyPairs() {
-        Set<CurrencyPairDTO> requestedTickers = new LinkedHashSet<>();
-        requestedTickers.add(new CurrencyPairDTO(ETH, BTC));
-        requestedTickers.add(new CurrencyPairDTO(ETH, USDT));
+    public final Set<CurrencyPair> getRequestedCurrencyPairs() {
+        Set<CurrencyPair> requestedTickers = new LinkedHashSet<>();
+        requestedTickers.add(CurrencyPair.forValues(ETH, BTC));
+        requestedTickers.add(CurrencyPair.forValues(ETH, USDT));
         return requestedTickers;
     }
 
@@ -95,7 +95,7 @@ public class TestableCassandreStrategy extends BasicCassandreStrategy {
     }
 
     @Override
-    public final void onTickerUpdate(final TickerDTO ticker) {
+    public final void onTickerUpdate(final Ticker ticker) {
         tickersUpdateReceived.add(ticker);
         logger.info("TestableStrategy-onTickerUpdate " + getCount(tickersUpdateReceived) + " : " + ticker + "\n");
         try {
@@ -174,7 +174,7 @@ public class TestableCassandreStrategy extends BasicCassandreStrategy {
      *
      * @return lastTickersReceived
      */
-    public final List<TickerDTO> getTickersUpdateReceived() {
+    public final List<Ticker> getTickersUpdateReceived() {
         return tickersUpdateReceived;
     }
 

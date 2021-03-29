@@ -5,7 +5,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import tech.cassandre.trading.bot.dto.user.AccountDTO;
 import tech.cassandre.trading.bot.dto.user.BalanceDTO;
 import tech.cassandre.trading.bot.dto.user.UserDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
+import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.service.UserService;
 import tech.cassandre.trading.bot.strategy.GenericCassandreStrategy;
 import tech.cassandre.trading.bot.util.base.service.BaseService;
@@ -61,7 +61,7 @@ public class UserServiceDryModeImplementation extends BaseService implements Use
                 logger.info("Adding account '" + accountName + "'");
 
                 // Balances.
-                HashMap<CurrencyDTO, BalanceDTO> balances = new LinkedHashMap<>();
+                HashMap<Currency, BalanceDTO> balances = new LinkedHashMap<>();
                 try (Scanner scanner = new Scanner(file.getFile())) {
                     while (scanner.hasNextLine()) {
                         try (Scanner rowScanner = new Scanner(scanner.nextLine())) {
@@ -76,10 +76,10 @@ public class UserServiceDryModeImplementation extends BaseService implements Use
                             // Creating balance.
                             logger.info("- Adding balance " + amount + " " + currency);
                             BalanceDTO balance = BalanceDTO.builder()
-                                    .currency(new CurrencyDTO(currency))
+                                    .currency(Currency.forString(currency))
                                     .available(new BigDecimal(amount))
                                     .build();
-                            balances.put(new CurrencyDTO(currency), balance);
+                            balances.put(Currency.forString(currency), balance);
                         }
                     }
                 } catch (FileNotFoundException e) {
@@ -125,13 +125,13 @@ public class UserServiceDryModeImplementation extends BaseService implements Use
      * @param currency currency
      * @param amount   amount
      */
-    public void addToBalance(final CurrencyDTO currency, final BigDecimal amount) {
+    public void addToBalance(final Currency currency, final BigDecimal amount) {
         Optional<BalanceDTO> balance = user.getAccounts().get(TRADE_ACCOUNT_ID).getBalance(currency);
         final Map<String, AccountDTO> accounts = new LinkedHashMap<>();
 
         // For each account.
         user.getAccounts().forEach((s, a) -> {
-            HashMap<CurrencyDTO, BalanceDTO> balances = new LinkedHashMap<>();
+            HashMap<Currency, BalanceDTO> balances = new LinkedHashMap<>();
 
             // For each balance.
             a.getBalances().forEach((c, b) -> {

@@ -1,7 +1,7 @@
 package tech.cassandre.trading.bot.service;
 
 import tech.cassandre.trading.bot.dto.market.TickerDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 
 import java.util.Optional;
 
@@ -16,6 +16,6 @@ public interface MarketService {
      * @param currencyPair currency pair
      * @return ticker
      */
-    Optional<TickerDTO> getTicker(CurrencyPairDTO currencyPair);
+    Optional<TickerDTO> getTicker(CurrencyPair currencyPair);
 
 }

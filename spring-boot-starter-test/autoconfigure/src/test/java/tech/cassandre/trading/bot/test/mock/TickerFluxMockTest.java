@@ -6,11 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
+import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.market.TickerDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.service.MarketService;
 import tech.cassandre.trading.bot.test.strategy.TestableStrategy;
 import tech.cassandre.trading.bot.test.util.BaseTest;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -21,10 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.BTC;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.ETH;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.KCS;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.USDT;
+import static tech.cassandre.trading.bot.dto.util.Currency.BTC;
+import static tech.cassandre.trading.bot.dto.util.Currency.ETH;
+import static tech.cassandre.trading.bot.dto.util.Currency.KCS;
+import static tech.cassandre.trading.bot.dto.util.Currency.USDT;
 
 @SpringBootTest
 @Import(TickerFluxMock.class)
@@ -43,9 +44,9 @@ public class TickerFluxMockTest extends BaseTest {
     @Test
     @DisplayName("Check tickers received")
     public void checkTickersReceived() {
-        CurrencyPairDTO cp1 = new CurrencyPairDTO(BTC, USDT);
-        CurrencyPairDTO cp2 = new CurrencyPairDTO(ETH, BTC);
-        CurrencyPairDTO cp3 = new CurrencyPairDTO(KCS, USDT);
+        CurrencyPair cp1 = CurrencyPair.forValues(BTC, USDT);
+        CurrencyPair cp2 = CurrencyPair.forValues(ETH, BTC);
+        CurrencyPair cp3 = CurrencyPair.forValues(KCS, USDT);
 
         // Check the files we found.
         List<Resource> resources = tickerFluxMock.getFilesToLoad();
@@ -77,7 +78,7 @@ public class TickerFluxMockTest extends BaseTest {
         await().untilAsserted(() -> assertTrue(tickerFluxMock.isFluxDone(cp2)));
         assertFalse(tickerFluxMock.isFluxDone(cp3));
         assertFalse(tickerFluxMock.isFluxDone());
-        List<TickerDTO> tickersReceived = strategy.getTickersUpdateReceived();
+        List<Ticker> tickersReceived = strategy.getTickersUpdateReceived();
         assertEquals(1508371200000L, tickersReceived.get(0).getTimestamp().toInstant().toEpochMilli());
         assertEquals(1508544000000L, tickersReceived.get(1).getTimestamp().toInstant().toEpochMilli());
         assertEquals(1508457600000L, tickersReceived.get(2).getTimestamp().toInstant().toEpochMilli());

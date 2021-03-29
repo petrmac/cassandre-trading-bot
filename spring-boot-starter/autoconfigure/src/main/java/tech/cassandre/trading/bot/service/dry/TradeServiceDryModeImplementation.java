@@ -3,6 +3,7 @@ package tech.cassandre.trading.bot.service.dry;
 import tech.cassandre.trading.bot.batch.OrderFlux;
 import tech.cassandre.trading.bot.batch.TradeFlux;
 import tech.cassandre.trading.bot.domain.Order;
+import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.market.TickerDTO;
 import tech.cassandre.trading.bot.dto.strategy.StrategyDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderCreationResultDTO;
@@ -13,7 +14,7 @@ import tech.cassandre.trading.bot.dto.user.AccountDTO;
 import tech.cassandre.trading.bot.dto.user.BalanceDTO;
 import tech.cassandre.trading.bot.dto.user.UserDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.repository.OrderRepository;
 import tech.cassandre.trading.bot.repository.TradeRepository;
 import tech.cassandre.trading.bot.service.TradeService;
@@ -58,7 +59,7 @@ public class TradeServiceDryModeImplementation extends BaseService implements Tr
     private final AtomicInteger tradeCounter = new AtomicInteger(1);
 
     /** Last received tickers. */
-    private final Map<CurrencyPairDTO, TickerDTO> lastTickers = new LinkedHashMap<>();
+    private final Map<CurrencyPair, Ticker> lastTickers = new LinkedHashMap<>();
 
     /** Order flux. */
     private OrderFlux orderFlux;
@@ -111,9 +112,9 @@ public class TradeServiceDryModeImplementation extends BaseService implements Tr
      * @param amount       amount
      * @return order creation result
      */
-    private OrderCreationResultDTO createMarketOrder(final StrategyDTO strategy, final OrderTypeDTO orderTypeDTO, final CurrencyPairDTO currencyPair, final BigDecimal amount) {
+    private OrderCreationResultDTO createMarketOrder(final StrategyDTO strategy, final OrderTypeDTO orderTypeDTO, final CurrencyPair currencyPair, final BigDecimal amount) {
         // We retrieve the last pricing from tickers.
-        TickerDTO t = lastTickers.get(currencyPair);
+        Ticker t = lastTickers.get(currencyPair);
 
         // We create the order.
         if (t != null) {
@@ -239,22 +240,22 @@ public class TradeServiceDryModeImplementation extends BaseService implements Tr
     }
 
     @Override
-    public final OrderCreationResultDTO createBuyMarketOrder(final StrategyDTO strategy, final CurrencyPairDTO currencyPair, final BigDecimal amount) {
+    public final OrderCreationResultDTO createBuyMarketOrder(final StrategyDTO strategy, final CurrencyPair currencyPair, final BigDecimal amount) {
         return createMarketOrder(strategy, BID, currencyPair, amount);
     }
 
     @Override
-    public final OrderCreationResultDTO createSellMarketOrder(final StrategyDTO strategy, final CurrencyPairDTO currencyPair, final BigDecimal amount) {
+    public final OrderCreationResultDTO createSellMarketOrder(final StrategyDTO strategy, final CurrencyPair currencyPair, final BigDecimal amount) {
         return createMarketOrder(strategy, ASK, currencyPair, amount);
     }
 
     @Override
-    public final OrderCreationResultDTO createBuyLimitOrder(final StrategyDTO strategy, final CurrencyPairDTO currencyPair, final BigDecimal amount, final BigDecimal limitPrice) {
+    public final OrderCreationResultDTO createBuyLimitOrder(final StrategyDTO strategy, final CurrencyPair currencyPair, final BigDecimal amount, final BigDecimal limitPrice) {
         return new OrderCreationResultDTO("Not implemented", new Exception("Not implemented"));
     }
 
     @Override
-    public final OrderCreationResultDTO createSellLimitOrder(final StrategyDTO strategy, final CurrencyPairDTO currencyPair, final BigDecimal amount, final BigDecimal limitPrice) {
+    public final OrderCreationResultDTO createSellLimitOrder(final StrategyDTO strategy, final CurrencyPair currencyPair, final BigDecimal amount, final BigDecimal limitPrice) {
         return new OrderCreationResultDTO("Not implemented", new Exception("Not implemented"));
     }
 
@@ -283,7 +284,7 @@ public class TradeServiceDryModeImplementation extends BaseService implements Tr
     }
 
     @Override
-    public final Set<TradeDTO> getTrades(final Set<CurrencyPairDTO> currencyPairs) {
+    public final Set<TradeDTO> getTrades(final Set<CurrencyPair> currencyPairs) {
         return tradeRepository.findByOrderByTimestampAsc()
                 .stream()
                 .map(tradeMapper::mapToTradeDTO)

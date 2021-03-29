@@ -7,8 +7,8 @@ import tech.cassandre.trading.bot.dto.position.PositionRulesDTO;
 import tech.cassandre.trading.bot.dto.strategy.StrategyDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
+import tech.cassandre.trading.bot.dto.util.Currency;
+import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.GainDTO;
 
 import java.math.BigDecimal;
@@ -33,7 +33,7 @@ public interface PositionService {
      * @return position creation result
      */
     PositionCreationResultDTO createLongPosition(StrategyDTO strategy,
-                                                 CurrencyPairDTO currencyPair,
+                                                 CurrencyPair currencyPair,
                                                  BigDecimal amount,
                                                  PositionRulesDTO rules);
 
@@ -49,7 +49,7 @@ public interface PositionService {
      * @return position creation result
      */
     PositionCreationResultDTO createShortPosition(StrategyDTO strategy,
-                                                  CurrencyPairDTO currencyPair,
+                                                  CurrencyPair currencyPair,
                                                   BigDecimal amount,
                                                   PositionRulesDTO rules);
 
@@ -102,6 +102,6 @@ public interface PositionService {
      *
      * @return gains by currency.
      */
-    HashMap<CurrencyDTO, GainDTO> getGains();
+    HashMap<Currency, GainDTO> getGains();
 
 }
