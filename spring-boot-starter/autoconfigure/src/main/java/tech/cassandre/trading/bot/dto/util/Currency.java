@@ -665,7 +665,7 @@ public interface Currency {
     Currency UGX = CurrencyDTO.createCurrency("UGX", "Ugandan Shilling", null);
 
     /** United States Dollar. */
-    Currency USD = CurrencyDTO.createCurrency("USD", "United States Dollar", null);
+    Currency USD = CurrencyDTO.createCurrency("USD", "United States Dollar", "$");
 
     /** Tether USD Anchor. */
     Currency USDT = CurrencyDTO.createCurrency("USDT", "Tether USD Anchor", null);

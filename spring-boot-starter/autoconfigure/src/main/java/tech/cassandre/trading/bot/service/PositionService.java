@@ -1,7 +1,6 @@
 package tech.cassandre.trading.bot.service;
 
 import tech.cassandre.trading.bot.dto.market.Ticker;
-import tech.cassandre.trading.bot.dto.market.TickerDTO;
 import tech.cassandre.trading.bot.dto.position.PositionCreationResultDTO;
 import tech.cassandre.trading.bot.dto.position.PositionDTO;
 import tech.cassandre.trading.bot.dto.position.PositionRulesDTO;
