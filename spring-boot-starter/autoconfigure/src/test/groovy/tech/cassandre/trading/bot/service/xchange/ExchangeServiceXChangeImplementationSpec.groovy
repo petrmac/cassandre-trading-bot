@@ -5,10 +5,13 @@ import org.knowm.xchange.currency.CurrencyPair
 import org.knowm.xchange.dto.meta.CurrencyPairMetaData
 import org.knowm.xchange.dto.meta.ExchangeMetaData
 import spock.lang.Specification
+import tech.cassandre.trading.bot.test.configuration.mapper.TestMapperConfiguration
+import tech.cassandre.trading.bot.util.mapper.MapperService
 
 class ExchangeServiceXChangeImplementationSpec extends Specification {
 
     ExchangeServiceXChangeImplementation service
+    MapperService mapperService
 
     Exchange exchange
     ExchangeMetaData metaData
@@ -16,8 +19,10 @@ class ExchangeServiceXChangeImplementationSpec extends Specification {
     CurrencyPair btcUsd
 
     def setup() {
+        TestMapperConfiguration testMapperConfiguration = new TestMapperConfiguration()
+        mapperService = testMapperConfiguration.getMapperService()
         exchange = Mock(Exchange)
-        service = new ExchangeServiceXChangeImplementation(exchange)
+        service = new ExchangeServiceXChangeImplementation(exchange, mapperService)
 
         btcUsd = new CurrencyPair('BTC/USD')
     }
