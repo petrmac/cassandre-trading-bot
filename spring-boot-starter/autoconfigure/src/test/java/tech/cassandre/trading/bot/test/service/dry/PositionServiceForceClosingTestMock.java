@@ -1,32 +1,36 @@
 package tech.cassandre.trading.bot.test.service.dry;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import tech.cassandre.trading.bot.batch.TickerFlux;
 import tech.cassandre.trading.bot.dto.market.TickerDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyPair;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 import tech.cassandre.trading.bot.service.MarketService;
 import tech.cassandre.trading.bot.test.util.junit.BaseTest;
+import tech.cassandre.trading.bot.util.mapper.MapperService;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.BTC;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.ETH;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.USDT;
+import static tech.cassandre.trading.bot.dto.util.Currency.BTC;
+import static tech.cassandre.trading.bot.dto.util.Currency.ETH;
+import static tech.cassandre.trading.bot.dto.util.Currency.USDT;
 
 @SuppressWarnings("unchecked")
 @TestConfiguration
 public class PositionServiceForceClosingTestMock extends BaseTest {
 
+    @Autowired
+    protected MapperService mapperService;
+
     @Bean
     @Primary
     public TickerFlux tickerFlux() {
-        return new TickerFlux(marketService());
+        return new TickerFlux(mapperService, marketService());
     }
 
     @Bean

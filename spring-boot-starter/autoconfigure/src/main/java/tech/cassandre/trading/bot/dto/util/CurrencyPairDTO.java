@@ -5,6 +5,7 @@ import lombok.Value;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.instrument.Instrument;
 
+import java.text.MessageFormat;
 import java.util.Objects;
 
 /**

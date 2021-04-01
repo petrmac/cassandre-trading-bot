@@ -11,12 +11,16 @@ import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 
+import static org.mapstruct.InjectionStrategy.CONSTRUCTOR;
 import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 
 /**
  * Trade mapper.
  */
-@Mapper(uses = {UtilMapper.class, CurrencyMapper.class}, nullValuePropertyMappingStrategy = IGNORE)
+@Mapper(componentModel = "spring",
+        injectionStrategy = CONSTRUCTOR,
+        uses = {UtilMapper.class, CurrencyMapper.class, CurrencyPairMapper.class},
+        nullValuePropertyMappingStrategy = IGNORE)
 public interface TradeMapper {
 
     // =================================================================================================================
@@ -56,7 +60,7 @@ public interface TradeMapper {
         if (source.getFeeAmount() != null && source.getFeeCurrency() != null) {
             return CurrencyAmountDTO.builder()
                     .value(source.getFeeAmount())
-                    .currency(Currency.forString(source.getFeeCurrency().toString()))
+                    .currency(Currency.forValue(source.getFeeCurrency().toString()))
                     .build();
         } else {
             return null;
@@ -83,13 +87,4 @@ public interface TradeMapper {
     // Domain to DTO.
 
     TradeDTO mapToTradeDTO(Trade source);
-
-    default String map(org.knowm.xchange.currency.Currency value){
-        return value.getCurrencyCode();
-    }
-
-    default String map(Currency value) {
-        return value.getCode();
-    }
-
 }

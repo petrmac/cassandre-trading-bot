@@ -6,10 +6,12 @@ import org.mapstruct.ValueMapping;
 import org.mapstruct.ValueMappings;
 import tech.cassandre.trading.bot.dto.trade.OrderTypeDTO;
 
+import static org.mapstruct.InjectionStrategy.CONSTRUCTOR;
+
 /**
  * Util mapper.
  */
-@Mapper(uses = {CurrencyMapper.class})
+@Mapper(componentModel = "spring", injectionStrategy = CONSTRUCTOR, uses = {CurrencyMapper.class})
 public interface UtilMapper {
 
     // =================================================================================================================

@@ -5,10 +5,12 @@ import org.mapstruct.Mapping;
 import tech.cassandre.trading.bot.domain.Strategy;
 import tech.cassandre.trading.bot.dto.strategy.StrategyDTO;
 
+import static org.mapstruct.InjectionStrategy.CONSTRUCTOR;
+
 /**
  * Strategy mapper.
  */
-@Mapper
+@Mapper(componentModel = "spring", injectionStrategy = CONSTRUCTOR)
 public interface StrategyMapper {
 
     // =================================================================================================================

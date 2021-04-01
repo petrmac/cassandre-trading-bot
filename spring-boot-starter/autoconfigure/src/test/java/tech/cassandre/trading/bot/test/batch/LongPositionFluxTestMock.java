@@ -5,6 +5,7 @@ import org.knowm.xchange.dto.trade.MarketOrder;
 import org.knowm.xchange.dto.trade.OpenOrders;
 import org.knowm.xchange.dto.trade.UserTrades;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.ComponentScan;
 import tech.cassandre.trading.bot.test.util.junit.BaseMock;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 @TestConfiguration
+@ComponentScan("tech.cassandre.trading.bot.util.mapper")
 public class LongPositionFluxTestMock extends BaseMock {
 
     @Override

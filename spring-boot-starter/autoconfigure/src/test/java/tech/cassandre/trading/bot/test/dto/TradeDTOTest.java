@@ -6,14 +6,13 @@ import org.junit.jupiter.api.Test;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyPair;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 
 import java.time.ZonedDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static tech.cassandre.trading.bot.dto.trade.OrderTypeDTO.BID;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.BTC;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.ETH;
+import static tech.cassandre.trading.bot.dto.util.Currency.BTC;
+import static tech.cassandre.trading.bot.dto.util.Currency.ETH;
 
 @DisplayName("DTO - TradeDTO")
 public class TradeDTOTest {

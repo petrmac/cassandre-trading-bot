@@ -10,6 +10,7 @@ import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import tech.cassandre.trading.bot.util.base.configuration.BaseConfiguration;
+import tech.cassandre.trading.bot.util.mapper.MapperService;
 import tech.cassandre.trading.bot.util.parameters.DatabaseParameters;
 
 import java.time.ZonedDateTime;
@@ -39,7 +40,9 @@ public class DatabaseAutoConfiguration extends BaseConfiguration {
      *
      * @param newDatabaseParameters database parameters.
      */
-    public DatabaseAutoConfiguration(final DatabaseParameters newDatabaseParameters) {
+    public DatabaseAutoConfiguration(final DatabaseParameters newDatabaseParameters,
+                                     final MapperService mapperService) {
+        super(mapperService);
         this.databaseParameters = newDatabaseParameters;
     }
 

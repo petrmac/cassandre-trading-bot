@@ -14,7 +14,7 @@ import java.util.TreeSet;
  * Currency.
  */
 @SuppressWarnings("unused")
-public final class CurrencyDTO implements Serializable, Currency {
+final class CurrencyDTO implements Serializable, Currency {
 
     /** List of currencies. */
     private static final Map<String, CurrencyDTO> CURRENCIES = new HashMap<>();

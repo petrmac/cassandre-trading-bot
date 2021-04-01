@@ -1,5 +1,7 @@
 package tech.cassandre.trading.bot.service.dry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import tech.cassandre.trading.bot.dto.user.AccountDTO;
@@ -9,6 +11,7 @@ import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.service.UserService;
 import tech.cassandre.trading.bot.strategy.GenericCassandreStrategy;
 import tech.cassandre.trading.bot.util.base.service.BaseService;
+import tech.cassandre.trading.bot.util.mapper.MapperService;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,6 +29,9 @@ import java.util.Scanner;
  * User service (dry mode implementation).
  */
 public class UserServiceDryModeImplementation extends BaseService implements UserService {
+
+    /** Logger. */
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     /** User file prefix. */
     private static final String USER_FILE_PREFIX = "user-";
@@ -48,7 +54,8 @@ public class UserServiceDryModeImplementation extends BaseService implements Use
     /**
      * Constructor.
      */
-    public UserServiceDryModeImplementation() {
+    public UserServiceDryModeImplementation(final MapperService mapperService) {
+        super(mapperService);
         Map<String, AccountDTO> accounts = new LinkedHashMap<>();
 
         getFilesToLoad().forEach(file -> {
@@ -76,10 +83,10 @@ public class UserServiceDryModeImplementation extends BaseService implements Use
                             // Creating balance.
                             logger.info("- Adding balance " + amount + " " + currency);
                             BalanceDTO balance = BalanceDTO.builder()
-                                    .currency(Currency.forString(currency))
+                                    .currency(Currency.forValue(currency))
                                     .available(new BigDecimal(amount))
                                     .build();
-                            balances.put(Currency.forString(currency), balance);
+                            balances.put(Currency.forValue(currency), balance);
                         }
                     }
                 } catch (FileNotFoundException e) {

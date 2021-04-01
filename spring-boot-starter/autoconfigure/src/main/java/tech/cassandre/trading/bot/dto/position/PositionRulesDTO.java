@@ -2,7 +2,7 @@ package tech.cassandre.trading.bot.dto.position;
 
 import lombok.Getter;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import tech.cassandre.trading.bot.util.java.EqualsBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import java.text.DecimalFormat;
 

@@ -18,6 +18,7 @@ import tech.cassandre.trading.bot.repository.OrderRepository;
 import tech.cassandre.trading.bot.repository.TradeRepository;
 import tech.cassandre.trading.bot.service.TradeService;
 import tech.cassandre.trading.bot.util.base.service.BaseService;
+import tech.cassandre.trading.bot.util.mapper.MapperService;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -81,10 +82,13 @@ public class TradeServiceDryModeImplementation extends BaseService implements Tr
      * @param newUserService     user service
      * @param newTradeRepository trade repository
      * @param newOrderRepository order repository
+     * @param mapperService mapper service
      */
     public TradeServiceDryModeImplementation(final UserServiceDryModeImplementation newUserService,
                                              final TradeRepository newTradeRepository,
-                                             final OrderRepository newOrderRepository) {
+                                             final OrderRepository newOrderRepository,
+                                             final MapperService mapperService) {
+        super(mapperService);
         this.userService = newUserService;
         this.tradeRepository = newTradeRepository;
         this.orderRepository = newOrderRepository;
@@ -278,7 +282,7 @@ public class TradeServiceDryModeImplementation extends BaseService implements Tr
     public final Set<OrderDTO> getOrders() {
         return orderRepository.findByOrderByTimestampAsc()
                 .stream()
-                .map(orderMapper::mapToOrderDTO)
+                .map(getMapperService().getOrderMapper()::mapToOrderDTO)
                 .collect(Collectors.toSet());
     }
 
@@ -286,7 +290,7 @@ public class TradeServiceDryModeImplementation extends BaseService implements Tr
     public final Set<TradeDTO> getTrades(final Set<CurrencyPair> currencyPairs) {
         return tradeRepository.findByOrderByTimestampAsc()
                 .stream()
-                .map(tradeMapper::mapToTradeDTO)
+                .map(getMapperService().getTradeMapper()::mapToTradeDTO)
                 .collect(Collectors.toSet());
     }
 

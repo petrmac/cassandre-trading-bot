@@ -1,5 +1,7 @@
 package tech.cassandre.trading.bot.util.base.batch;
 
+import tech.cassandre.trading.bot.util.mapper.*;
+
 import java.util.Set;
 
 /**
@@ -8,6 +10,15 @@ import java.util.Set;
  * @param <T> flux type
  */
 public abstract class BaseExternalFlux<T> extends BaseFlux<T> {
+
+    /**
+     * Constructor.
+     *
+     * @param mapperService the mapper service
+    */
+    public BaseExternalFlux(final MapperService mapperService) {
+        super(mapperService);
+    }
 
     /**
      * Implements this method to return all the new values. Those values will be sent to the strategy.

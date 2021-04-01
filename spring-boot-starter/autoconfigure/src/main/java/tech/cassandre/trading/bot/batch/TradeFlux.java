@@ -7,6 +7,7 @@ import tech.cassandre.trading.bot.repository.OrderRepository;
 import tech.cassandre.trading.bot.repository.TradeRepository;
 import tech.cassandre.trading.bot.service.TradeService;
 import tech.cassandre.trading.bot.util.base.batch.BaseExternalFlux;
+import tech.cassandre.trading.bot.util.mapper.*;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -34,13 +35,16 @@ public class TradeFlux extends BaseExternalFlux<TradeDTO> {
     /**
      * Constructor.
      *
+     * @param mapperService mapper service
      * @param newTradeService    trade service
      * @param newOrderRepository order repository
      * @param newTradeRepository trade repository
      */
-    public TradeFlux(final TradeService newTradeService,
+    public TradeFlux(final MapperService mapperService,
+                     final TradeService newTradeService,
                      final OrderRepository newOrderRepository,
                      final TradeRepository newTradeRepository) {
+        super(mapperService);
         this.tradeRepository = newTradeRepository;
         this.orderRepository = newOrderRepository;
         this.tradeService = newTradeService;
@@ -66,7 +70,7 @@ public class TradeFlux extends BaseExternalFlux<TradeDTO> {
                 .forEach(trade -> {
                     logger.debug("TradeFlux - Treating trade : {}", trade.getTradeId());
                     final Optional<Trade> tradeInDatabase = tradeRepository.findByTradeId(trade.getTradeId());
-                    if (tradeInDatabase.isEmpty() || !tradeMapper.mapToTradeDTO(tradeInDatabase.get()).equals(trade)) {
+                    if (tradeInDatabase.isEmpty() || !mapperService.getTradeMapper().mapToTradeDTO(tradeInDatabase.get()).equals(trade)) {
                         logger.debug("TradeFlux - Trade {} has changed : {}", trade.getTradeId(), trade);
                         newValues.add(trade);
                     }
@@ -82,21 +86,21 @@ public class TradeFlux extends BaseExternalFlux<TradeDTO> {
         tradeRepository.findByTradeId(newValue.getTradeId())
                 .ifPresentOrElse(trade -> {
                     // Update trade.
-                    tradeMapper.updateTrade(newValue, trade);
+                    mapperService.getTradeMapper().updateTrade(newValue, trade);
                     orderRepository.findByOrderId(newValue.getOrderId())
                             .ifPresent(order -> trade.setOrder(order.getId()));
                     valueToSave.set(trade);
                     logger.debug("TradeFlux - Updating trade in database {}", trade);
                 }, () -> {
                     // Create trade.
-                    final Trade newTrade = tradeMapper.mapToTrade(newValue);
+                    final Trade newTrade = mapperService.getTradeMapper().mapToTrade(newValue);
                     orderRepository.findByOrderId(newValue.getOrderId())
                             .ifPresent(order -> newTrade.setOrder(order.getId()));
                     valueToSave.set(newTrade);
                     logger.debug("TradeFlux - Creating trade in database {}", newTrade);
                 });
 
-        return Optional.ofNullable(tradeMapper.mapToTradeDTO(tradeRepository.save(valueToSave.get())));
+        return Optional.ofNullable(mapperService.getTradeMapper().mapToTradeDTO(tradeRepository.save(valueToSave.get())));
     }
 
 }

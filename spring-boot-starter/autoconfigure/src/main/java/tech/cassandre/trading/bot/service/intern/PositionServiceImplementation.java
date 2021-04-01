@@ -1,5 +1,7 @@
 package tech.cassandre.trading.bot.service.intern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import tech.cassandre.trading.bot.batch.PositionFlux;
 import tech.cassandre.trading.bot.domain.Position;
@@ -20,6 +22,9 @@ import tech.cassandre.trading.bot.repository.PositionRepository;
 import tech.cassandre.trading.bot.service.PositionService;
 import tech.cassandre.trading.bot.service.TradeService;
 import tech.cassandre.trading.bot.util.base.service.BaseService;
+import tech.cassandre.trading.bot.util.mapper.MapperService;
+import tech.cassandre.trading.bot.util.mapper.PositionMapper;
+import tech.cassandre.trading.bot.util.mapper.StrategyMapper;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -47,8 +52,10 @@ import static tech.cassandre.trading.bot.dto.position.PositionTypeDTO.SHORT;
 /**
  * Position service implementation.
  */
-@Component
 public class PositionServiceImplementation extends BaseService implements PositionService {
+
+    /** Logger. */
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     /** Big decimal scale for division. */
     public static final int SCALE = 8;
@@ -74,7 +81,9 @@ public class PositionServiceImplementation extends BaseService implements Positi
      */
     public PositionServiceImplementation(final PositionRepository newPositionRepository,
                                          final TradeService newTradeService,
-                                         final PositionFlux newPositionFlux) {
+                                         final PositionFlux newPositionFlux,
+                                         final MapperService mapperService) {
+        super(mapperService);
         this.positionRepository = newPositionRepository;
         this.tradeService = newTradeService;
         this.positionFlux = newPositionFlux;
@@ -105,6 +114,8 @@ public class PositionServiceImplementation extends BaseService implements Positi
                                                           final CurrencyPair currencyPair,
                                                           final BigDecimal amount,
                                                           final PositionRulesDTO rules) {
+        final StrategyMapper strategyMapper = getMapperService().getStrategyMapper();
+        final PositionMapper positionMapper = getMapperService().getPositionMapper();
         // Trying to create an order.
         logger.debug("PositionService - Creating a {} position for {} on {} with the rules : {}", type.toString().toLowerCase(Locale.ROOT), amount, currencyPair, rules);
         // =============================================================================================================
@@ -153,7 +164,7 @@ public class PositionServiceImplementation extends BaseService implements Positi
         logger.debug("PositionService - Retrieving all positions");
         return positionRepository.findByOrderById()
                 .stream()
-                .map(positionMapper::mapToPositionDTO)
+                .map(getMapperService().getPositionMapper()::mapToPositionDTO)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
@@ -161,7 +172,7 @@ public class PositionServiceImplementation extends BaseService implements Positi
     public final Optional<PositionDTO> getPositionById(final long id) {
         logger.debug("PositionService - Retrieving position {}", id);
         final Optional<Position> position = positionRepository.findById(id);
-        return position.map(positionMapper::mapToPositionDTO);
+        return position.map(getMapperService().getPositionMapper()::mapToPositionDTO);
     }
 
     @Override
@@ -169,7 +180,7 @@ public class PositionServiceImplementation extends BaseService implements Positi
         logger.debug("PositionService - Updating position with order {}", order);
         positionRepository.findByStatusNot(CLOSED)
                 .stream()
-                .map(positionMapper::mapToPositionDTO)
+                .map(getMapperService().getPositionMapper()::mapToPositionDTO)
                 .forEach(p -> {
                     if (p.orderUpdate(order)) {
                         logger.debug("PositionService - Position {} updated with order {}", p.getPositionId(), order);
@@ -183,7 +194,7 @@ public class PositionServiceImplementation extends BaseService implements Positi
         logger.debug("PositionService - Updating position with trade {}", trade);
         positionRepository.findByStatusNot(CLOSED)
                 .stream()
-                .map(positionMapper::mapToPositionDTO)
+                .map(getMapperService().getPositionMapper()::mapToPositionDTO)
                 .forEach(p -> {
                     if (p.tradeUpdate(trade)) {
                         logger.debug("PositionService - Position {} updated with trade {}", p.getPositionId(), trade);
@@ -198,7 +209,7 @@ public class PositionServiceImplementation extends BaseService implements Positi
         logger.debug("PositionService - Updating position with ticker {}", ticker);
         positionRepository.findByStatus(OPENED)
                 .stream()
-                .map(positionMapper::mapToPositionDTO)
+                .map(getMapperService().getPositionMapper()::mapToPositionDTO)
                 .filter(p -> p.tickerUpdate(ticker))
                 .peek(p -> logger.debug("PositionService - Position {} updated with ticker {}", p.getPositionId(), ticker))
                 .forEach(p -> {
@@ -245,7 +256,7 @@ public class PositionServiceImplementation extends BaseService implements Positi
         // We calculate, by currency, the amount bought & sold.
         positionRepository.findByStatus(CLOSED)
                 .stream()
-                .map(positionMapper::mapToPositionDTO)
+                .map(getMapperService().getPositionMapper()::mapToPositionDTO)
                 .forEach(p -> {
                     // We retrieve the currency and initiate the maps if they are empty
                     Currency currency;

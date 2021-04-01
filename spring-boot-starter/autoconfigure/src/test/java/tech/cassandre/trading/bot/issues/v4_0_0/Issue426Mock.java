@@ -12,13 +12,13 @@ import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyPair;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 import tech.cassandre.trading.bot.repository.OrderRepository;
 import tech.cassandre.trading.bot.repository.PositionRepository;
 import tech.cassandre.trading.bot.repository.TradeRepository;
 import tech.cassandre.trading.bot.service.MarketService;
 import tech.cassandre.trading.bot.service.TradeService;
 import tech.cassandre.trading.bot.test.util.junit.BaseTest;
+import tech.cassandre.trading.bot.util.mapper.MapperService;
 
 import java.math.BigDecimal;
 import java.time.ZoneId;
@@ -33,9 +33,9 @@ import static org.mockito.Mockito.mock;
 import static tech.cassandre.trading.bot.dto.trade.OrderStatusDTO.FILLED;
 import static tech.cassandre.trading.bot.dto.trade.OrderStatusDTO.NEW;
 import static tech.cassandre.trading.bot.dto.trade.OrderTypeDTO.ASK;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.BTC;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.ETH;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.USDT;
+import static tech.cassandre.trading.bot.dto.util.Currency.BTC;
+import static tech.cassandre.trading.bot.dto.util.Currency.ETH;
+import static tech.cassandre.trading.bot.dto.util.Currency.USDT;
 
 @SuppressWarnings("unchecked")
 @TestConfiguration
@@ -50,22 +50,25 @@ public class Issue426Mock extends BaseTest {
     @Autowired
     private TradeRepository tradeRepository;
 
+    @Autowired
+    protected MapperService mapperService;
+
     @Bean
     @Primary
     public TickerFlux tickerFlux() {
-        return new TickerFlux(marketService());
+        return new TickerFlux(mapperService, marketService());
     }
 
     @Bean
     @Primary
     public OrderFlux orderFlux() {
-        return new OrderFlux(tradeService(), orderRepository);
+        return new OrderFlux(mapperService, tradeService(), orderRepository);
     }
 
     @Bean
     @Primary
     public TradeFlux tradeFlux() {
-        return new TradeFlux(tradeService(), orderRepository, tradeRepository);
+        return new TradeFlux(mapperService, tradeService(), orderRepository, tradeRepository);
     }
 
     @Bean

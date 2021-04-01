@@ -1,10 +1,10 @@
 package tech.cassandre.trading.bot.test.util.junit;
 
 import org.awaitility.Awaitility;
-import org.knowm.xchange.instrument.Instrument;
 import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.market.TickerDTO;
 import tech.cassandre.trading.bot.dto.strategy.StrategyDTO;
@@ -13,14 +13,7 @@ import tech.cassandre.trading.bot.dto.trade.OrderTypeDTO;
 import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyPair;
-import tech.cassandre.trading.bot.util.mapper.AccountMapper;
-import tech.cassandre.trading.bot.util.mapper.CurrencyMapper;
-import tech.cassandre.trading.bot.util.mapper.OrderMapper;
-import tech.cassandre.trading.bot.util.mapper.PositionMapper;
-import tech.cassandre.trading.bot.util.mapper.StrategyMapper;
-import tech.cassandre.trading.bot.util.mapper.TickerMapper;
-import tech.cassandre.trading.bot.util.mapper.TradeMapper;
-import tech.cassandre.trading.bot.util.mapper.UtilMapper;
+import tech.cassandre.trading.bot.util.mapper.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -58,28 +51,44 @@ public class BaseTest {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     /** Type mapper. */
-    protected final UtilMapper utilMapper = Mappers.getMapper(UtilMapper.class);
+    @Autowired
+    protected UtilMapper utilMapper;
 
     /** Currency mapper. */
-    protected final CurrencyMapper currencyMapper = Mappers.getMapper(CurrencyMapper.class);
+    @Autowired
+    protected CurrencyMapper currencyMapper;
+
+    /** Currency pair mapper. */
+    @Autowired
+    protected CurrencyPairMapper currencyPairMapper;
+
+    /** Currency amount mapper. */
+    @Autowired
+    protected CurrencyAmountMapper currencyAmountMapper;
 
     /** Strategy mapper. */
-    protected final StrategyMapper strategyMapper = Mappers.getMapper(StrategyMapper.class);
+    @Autowired
+    protected StrategyMapper strategyMapper;
 
     /** Account mapper. */
-    protected final AccountMapper accountMapper = Mappers.getMapper(AccountMapper.class);
+    @Autowired
+    protected AccountMapper accountMapper;
 
     /** Ticker mapper. */
-    protected final TickerMapper tickerMapper = Mappers.getMapper(TickerMapper.class);
+    @Autowired
+    protected TickerMapper tickerMapper;
 
     /** Order mapper. */
-    protected final OrderMapper orderMapper = Mappers.getMapper(OrderMapper.class);
+    @Autowired
+    protected OrderMapper orderMapper;
 
     /** Trade mapper. */
-    protected final TradeMapper tradeMapper = Mappers.getMapper(TradeMapper.class);
+    @Autowired
+    protected TradeMapper tradeMapper;
 
     /** Position mapper. */
-    protected final PositionMapper positionMapper = Mappers.getMapper(PositionMapper.class);
+    @Autowired
+    protected PositionMapper positionMapper;
 
     /** cp1 for tests. */
     protected final tech.cassandre.trading.bot.dto.util.CurrencyPair cp1 = tech.cassandre.trading.bot.dto.util.CurrencyPair.forValues(ETH, BTC);

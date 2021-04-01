@@ -34,6 +34,7 @@ import tech.cassandre.trading.bot.service.xchange.TradeServiceXChangeImplementat
 import tech.cassandre.trading.bot.service.xchange.UserServiceXChangeImplementation;
 import tech.cassandre.trading.bot.util.base.configuration.BaseConfiguration;
 import tech.cassandre.trading.bot.util.exception.ConfigurationException;
+import tech.cassandre.trading.bot.util.mapper.*;
 import tech.cassandre.trading.bot.util.parameters.ExchangeParameters;
 
 import javax.annotation.PostConstruct;
@@ -129,7 +130,9 @@ public class ExchangeAutoConfiguration extends BaseConfiguration {
                                      final ExchangeAccountRepository newExchangeAccountRepository,
                                      final OrderRepository newOrderRepository,
                                      final TradeRepository newTradeRepository,
-                                     final PositionRepository newPositionRepository) {
+                                     final PositionRepository newPositionRepository,
+                                     final MapperService mapperService) {
+        super(mapperService);
         this.applicationContext = newApplicationContext;
         this.exchangeParameters = newExchangeParameters;
         this.exchangeAccountRepository = newExchangeAccountRepository;
@@ -192,27 +195,27 @@ public class ExchangeAutoConfiguration extends BaseConfiguration {
             if (!exchangeParameters.getModes().getDry()) {
                 // Normal mode.
                 logger.info("ExchangeConfiguration - Dry mode is OFF");
-                this.exchangeService = new ExchangeServiceXChangeImplementation(xChangeExchange);
-                this.userService = new UserServiceXChangeImplementation(accountRate, xChangeAccountService);
-                this.marketService = new MarketServiceXChangeImplementation(tickerRate, xChangeMarketDataService);
-                this.tradeService = new TradeServiceXChangeImplementation(tradeRate, orderRepository, xChangeTradeService);
+                this.exchangeService = new ExchangeServiceXChangeImplementation(xChangeExchange, this.mapperService);
+                this.userService = new UserServiceXChangeImplementation(accountRate, mapperService, xChangeAccountService);
+                this.marketService = new MarketServiceXChangeImplementation(tickerRate, xChangeMarketDataService, mapperService);
+                this.tradeService = new TradeServiceXChangeImplementation(tradeRate, mapperService, orderRepository, xChangeTradeService);
             } else {
                 // Dry mode.
                 logger.info("ExchangeConfiguration - Dry mode is ON");
                 this.exchangeService = new ExchangeServiceDryModeImplementation(applicationContext);
-                userServiceDryMode = new UserServiceDryModeImplementation();
+                userServiceDryMode = new UserServiceDryModeImplementation(mapperService);
                 this.userService = userServiceDryMode;
-                this.marketService = new MarketServiceXChangeImplementation(tickerRate, xChangeMarketDataService);
-                tradeServiceDryMode = new TradeServiceDryModeImplementation(userServiceDryMode, tradeRepository, orderRepository);
+                this.marketService = new MarketServiceXChangeImplementation(tickerRate, xChangeMarketDataService, mapperService);
+                tradeServiceDryMode = new TradeServiceDryModeImplementation(userServiceDryMode, tradeRepository, orderRepository, mapperService);
                 this.tradeService = tradeServiceDryMode;
             }
 
             // Creates Cassandre flux.
-            accountFlux = new AccountFlux(userService);
-            tickerFlux = new TickerFlux(marketService);
-            orderFlux = new OrderFlux(tradeService, orderRepository);
-            tradeFlux = new TradeFlux(tradeService, orderRepository, tradeRepository);
-            positionFlux = new PositionFlux(positionRepository, orderRepository);
+            accountFlux = new AccountFlux(userService, mapperService);
+            tickerFlux = new TickerFlux(mapperService, marketService);
+            orderFlux = new OrderFlux(mapperService, tradeService, orderRepository);
+            tradeFlux = new TradeFlux(mapperService, tradeService, orderRepository, tradeRepository);
+            positionFlux = new PositionFlux(mapperService, positionRepository, orderRepository);
 
             // Force login to check credentials.
             xChangeAccountService.getAccountInfo();

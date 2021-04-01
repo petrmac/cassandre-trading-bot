@@ -23,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.cassandre.trading.bot.dto.user.AccountFeatureDTO.FUNDING;
 import static tech.cassandre.trading.bot.dto.user.AccountFeatureDTO.TRADING;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.ANC;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.BTC;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.ETH;
+import static tech.cassandre.trading.bot.dto.util.Currency.ANC;
+import static tech.cassandre.trading.bot.dto.util.Currency.BTC;
+import static tech.cassandre.trading.bot.dto.util.Currency.ETH;
 
 @SpringBootTest
 @ActiveProfiles("schedule-disabled")

@@ -15,12 +15,13 @@ import tech.cassandre.trading.bot.dto.trade.TradeDTO
 import tech.cassandre.trading.bot.dto.user.AccountDTO
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO
 import tech.cassandre.trading.bot.dto.util.Currency
-import tech.cassandre.trading.bot.dto.util.CurrencyDTO
 import tech.cassandre.trading.bot.dto.util.CurrencyPair
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO
 import tech.cassandre.trading.bot.repository.OrderRepository
 import tech.cassandre.trading.bot.repository.PositionRepository
 import tech.cassandre.trading.bot.repository.TradeRepository
+import tech.cassandre.trading.bot.test.configuration.mapper.TestMapperConfiguration
+import tech.cassandre.trading.bot.util.mapper.MapperService
 
 
 @Unroll
@@ -30,6 +31,7 @@ class BasicCassandreStrategySpec extends Specification {
     OrderRepository orderRepository
     TradeRepository tradeRepository
     PositionRepository positionRepository
+    MapperService mapperService
 
     Order order1
     Order order2
@@ -39,8 +41,10 @@ class BasicCassandreStrategySpec extends Specification {
     StrategyDTO strategyDTO = GroovyMock(StrategyDTO)
 
     def setup() {
+        def mapperConfig = new TestMapperConfiguration()
         strategy = new TestStrategy()
 
+        mapperService = mapperConfig.getMapperService()
         orderRepository = Mock(OrderRepository)
         tradeRepository = Mock(TradeRepository)
         positionRepository = Mock(PositionRepository)
@@ -48,6 +52,7 @@ class BasicCassandreStrategySpec extends Specification {
         strategy.tradeRepository = tradeRepository
         strategy.positionRepository = positionRepository
         strategy.strategyDTO = strategyDTO
+        strategy.mapperService = mapperService
 
         order1 = Mock(Order)
         order2 = Mock(Order)
@@ -203,7 +208,7 @@ class BasicCassandreStrategySpec extends Specification {
         }
 
         Map<Long, CurrencyAmountDTO> getLockedAmounts() {
-            return amountsLockedByPosition;
+            return amountsLockedByPosition
         }
 
         @Override
@@ -219,8 +224,8 @@ class BasicCassandreStrategySpec extends Specification {
 
     PositionDTO createNewLongPosition(String orderId) {
         CurrencyPairDTO pair = new CurrencyPairDTO.CurrencyPairDTOBuilder()
-                .baseCurrency(CurrencyDTO.BTC)
-                .quoteCurrency(CurrencyDTO.USD)
+                .baseCurrency(Currency.BTC)
+                .quoteCurrency(Currency.USD)
                 .build()
         PositionDTO dto = new PositionDTO(1L, PositionTypeDTO.LONG, GroovyMock(StrategyDTO), pair, 0.2, orderId, Mock(PositionRulesDTO))
         return dto

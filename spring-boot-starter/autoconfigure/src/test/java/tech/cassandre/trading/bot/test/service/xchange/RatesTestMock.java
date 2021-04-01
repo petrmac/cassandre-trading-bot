@@ -27,6 +27,7 @@ import tech.cassandre.trading.bot.service.UserService;
 import tech.cassandre.trading.bot.service.xchange.MarketServiceXChangeImplementation;
 import tech.cassandre.trading.bot.service.xchange.TradeServiceXChangeImplementation;
 import tech.cassandre.trading.bot.service.xchange.UserServiceXChangeImplementation;
+import tech.cassandre.trading.bot.util.mapper.MapperService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -58,29 +59,32 @@ public class RatesTestMock {
     @Autowired
     protected PositionRepository positionRepository;
 
+    @Autowired
+    protected MapperService mapperService;
+
     @Bean
     @Primary
     public AccountFlux accountFlux() {
-        return new AccountFlux(userService());
+        return new AccountFlux(userService(), mapperService);
     }
 
     @Bean
     @Primary
     public TickerFlux tickerFlux() {
-        return new TickerFlux(marketService());
+        return new TickerFlux(mapperService, marketService());
     }
 
     @Bean
     @Primary
     public OrderFlux orderFlux() {
-        return new OrderFlux(tradeService(), orderRepository);
+        return new OrderFlux(mapperService, tradeService(), orderRepository);
     }
 
     @Bean
     @Primary
 
     public TradeFlux tradeFlux() {
-        return new TradeFlux(tradeService(), orderRepository,tradeRepository);
+        return new TradeFlux(mapperService, tradeService(), orderRepository,tradeRepository);
     }
 
     @Bean
@@ -88,7 +92,7 @@ public class RatesTestMock {
     public MarketService marketService() {
         MarketDataService mock;
         mock = getXChangeMarketDataServiceMock();
-        return new MarketServiceXChangeImplementation(15000, mock);
+        return new MarketServiceXChangeImplementation(15000, mock, mapperService);
     }
 
     @Bean
@@ -100,7 +104,7 @@ public class RatesTestMock {
         } catch (IOException e) {
             return null;
         }
-        return new UserServiceXChangeImplementation(10000, mock);
+        return new UserServiceXChangeImplementation(10000, mapperService, mock);
     }
 
     @Bean
@@ -112,7 +116,7 @@ public class RatesTestMock {
         } catch (IOException e) {
             return null;
         }
-        return new TradeServiceXChangeImplementation(20000, orderRepository, mock);
+        return new TradeServiceXChangeImplementation(20000, mapperService, orderRepository, mock);
     }
 
     /**

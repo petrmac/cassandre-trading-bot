@@ -12,10 +12,14 @@ import tech.cassandre.trading.bot.dto.user.UserDTO;
 
 import java.util.Map;
 
+import static org.mapstruct.InjectionStrategy.CONSTRUCTOR;
+
 /**
  * Account mapper.
  */
-@Mapper(uses = CurrencyMapper.class)
+@Mapper(componentModel = "spring",
+        uses = CurrencyMapper.class,
+        injectionStrategy = CONSTRUCTOR)
 public interface AccountMapper {
 
     // =================================================================================================================

@@ -1,8 +1,11 @@
 package tech.cassandre.trading.bot.service.xchange;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tech.cassandre.trading.bot.dto.user.UserDTO;
 import tech.cassandre.trading.bot.service.UserService;
 import tech.cassandre.trading.bot.util.base.service.BaseService;
+import tech.cassandre.trading.bot.util.mapper.MapperService;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -11,6 +14,9 @@ import java.util.Optional;
  * User service - XChange implementation.
  */
 public class UserServiceXChangeImplementation extends BaseService implements UserService {
+
+    /** Logger. */
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     /** XChange service. */
     private final org.knowm.xchange.service.account.AccountService xChangeAccountService;
@@ -21,8 +27,10 @@ public class UserServiceXChangeImplementation extends BaseService implements Use
      * @param rate                     rate in ms
      * @param newXChangeAccountService xchange account service
      */
-    public UserServiceXChangeImplementation(final long rate, final org.knowm.xchange.service.account.AccountService newXChangeAccountService) {
-        super(rate);
+    public UserServiceXChangeImplementation(final long rate,
+                                            final MapperService mapperService,
+                                            final org.knowm.xchange.service.account.AccountService newXChangeAccountService) {
+        super(mapperService, rate);
         this.xChangeAccountService = newXChangeAccountService;
     }
 
@@ -34,7 +42,7 @@ public class UserServiceXChangeImplementation extends BaseService implements Use
             getBucket().asScheduler().consume(1);
 
             logger.debug("UserService - Retrieving account information");
-            final UserDTO user = accountMapper.mapToUserDTO(xChangeAccountService.getAccountInfo());
+            final UserDTO user = getMapperService().getAccountMapper().mapToUserDTO(xChangeAccountService.getAccountInfo());
             logger.debug("UserService - Account information retrieved " + user);
             return Optional.ofNullable(user);
         } catch (IOException e) {

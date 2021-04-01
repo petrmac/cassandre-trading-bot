@@ -18,10 +18,9 @@ public interface Currency {
      */
     String getDisplayName();
 
-    static Currency forString(final String value) {
+    static Currency forValue(final String value) {
         return CurrencyDTO.getInstanceNoCreate(value);
     }
-
 
     /** United Arab Emirates Dirham. */
     Currency AED = CurrencyDTO.createCurrency("AED", "United Arab Emirates Dirham", null);

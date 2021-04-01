@@ -11,7 +11,7 @@ class CurrencySpec extends Specification {
                                                                                   String expectedDisplay,
                                                                                   String expectedSymbol) {
         when:
-        def result = Currency.forString(currencyString)
+        def result = Currency.forValue(currencyString)
 
         then:
         result == expected

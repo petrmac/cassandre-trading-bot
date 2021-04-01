@@ -4,6 +4,8 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.knowm.xchange.dto.trade.LimitOrder;
 import org.knowm.xchange.dto.trade.MarketOrder;
 import org.knowm.xchange.service.trade.params.TradeHistoryParamsAll;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tech.cassandre.trading.bot.dto.strategy.StrategyDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderCreationResultDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
@@ -14,6 +16,7 @@ import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.repository.OrderRepository;
 import tech.cassandre.trading.bot.service.TradeService;
 import tech.cassandre.trading.bot.util.base.service.BaseService;
+import tech.cassandre.trading.bot.util.mapper.MapperService;
 import tech.cassandre.trading.bot.util.system.TimeProvider;
 
 import java.io.IOException;
@@ -37,6 +40,9 @@ import static tech.cassandre.trading.bot.dto.trade.OrderTypeDTO.BID;
  */
 public class TradeServiceXChangeImplementation extends BaseService implements TradeService {
 
+    /** Logger. */
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
     /** Order repository. */
     private final OrderRepository orderRepository;
 
@@ -54,9 +60,10 @@ public class TradeServiceXChangeImplementation extends BaseService implements Tr
      * @param newTradeService    market data service
      */
     public TradeServiceXChangeImplementation(final long rate,
+                                             final MapperService mapperService,
                                              final OrderRepository newOrderRepository,
                                              final org.knowm.xchange.service.trade.TradeService newTradeService) {
-        super(rate);
+        super(mapperService, rate);
         this.orderRepository = newOrderRepository;
         this.tradeService = newTradeService;
     }
@@ -76,9 +83,9 @@ public class TradeServiceXChangeImplementation extends BaseService implements Tr
                                                      final BigDecimal amount) {
         try {
             // Making the order.
-            MarketOrder m = new MarketOrder(utilMapper.mapToOrderType(orderTypeDTO),
+            MarketOrder m = new MarketOrder(getMapperService().getUtilMapper().mapToOrderType(orderTypeDTO),
                     amount,
-                    currencyMapper.mapToCurrencyPair(currencyPair));
+                    getMapperService().getCurrencyPairMapper().toXchangeCurrencyPair(currencyPair));
             logger.debug("TradeService - Sending market order : {} - {} - {}", orderTypeDTO, currencyPair, amount);
 
             // Sending the order.
@@ -124,9 +131,9 @@ public class TradeServiceXChangeImplementation extends BaseService implements Tr
                                                     final BigDecimal limitPrice) {
         try {
             // Making the order.
-            LimitOrder l = new LimitOrder(utilMapper.mapToOrderType(orderTypeDTO),
+            LimitOrder l = new LimitOrder(getMapperService().getUtilMapper().mapToOrderType(orderTypeDTO),
                     amount,
-                    currencyMapper.mapToCurrencyPair(currencyPair),
+                    getMapperService().getCurrencyPairMapper().toXchangeCurrencyPair(currencyPair),
                     null,
                     null,
                     limitPrice);
@@ -230,7 +237,7 @@ public class TradeServiceXChangeImplementation extends BaseService implements Tr
                 return tradeService.getOpenOrders()
                         .getOpenOrders()
                         .stream()
-                        .map(orderMapper::mapToOrderDTO)
+                        .map(getMapperService().getOrderMapper()::mapToOrderDTO)
                         .peek(o -> logger.debug("TradeService - {} remote order retrieved", o))
                         .collect(Collectors.toCollection(LinkedHashSet::new));
             }
@@ -257,7 +264,7 @@ public class TradeServiceXChangeImplementation extends BaseService implements Tr
         // Set currency pairs (required for exchanges like Gemini or Binance).
         if (!currencyPairs.isEmpty()) {
             currencyPairs.forEach(pair -> {
-                params.setCurrencyPair(currencyMapper.mapToCurrencyPair(pair));
+                params.setCurrencyPair(getMapperService().getCurrencyPairMapper().toXchangeCurrencyPair(pair));
                 try {
                     // Consume a token from the token bucket.
                     // If a token is not available this method will block until the refill adds one to the bucket.
@@ -266,7 +273,7 @@ public class TradeServiceXChangeImplementation extends BaseService implements Tr
                             tradeService.getTradeHistory(params)
                                     .getUserTrades()
                                     .stream()
-                                    .map(tradeMapper::mapToTradeDTO)
+                                    .map(getMapperService().getTradeMapper()::mapToTradeDTO)
                                     .sorted(Comparator.comparing(TradeDTO::getTimestamp))
                                     .collect(Collectors.toCollection(LinkedHashSet::new))
                     );

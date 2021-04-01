@@ -26,6 +26,7 @@ import tech.cassandre.trading.bot.service.UserService;
 import tech.cassandre.trading.bot.service.xchange.MarketServiceXChangeImplementation;
 import tech.cassandre.trading.bot.service.xchange.TradeServiceXChangeImplementation;
 import tech.cassandre.trading.bot.service.xchange.UserServiceXChangeImplementation;
+import tech.cassandre.trading.bot.util.mapper.MapperService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -62,29 +63,32 @@ public class BaseMock extends BaseTest {
     @Autowired
     protected PositionRepository positionRepository;
 
+    @Autowired
+    protected MapperService mapperService;
+
     @Bean
     @Primary
     public AccountFlux accountFlux() {
-        return new AccountFlux(userService());
+        return new AccountFlux(userService(), mapperService);
     }
 
     @Bean
     @Primary
     public TickerFlux tickerFlux() {
-        return new TickerFlux(marketService());
+        return new TickerFlux(mapperService, marketService());
     }
 
     @Bean
     @Primary
     public OrderFlux orderFlux() {
-        return new OrderFlux(tradeService(), orderRepository);
+        return new OrderFlux(mapperService, tradeService(), orderRepository);
     }
 
     @Bean
     @Primary
 
     public TradeFlux tradeFlux() {
-        return new TradeFlux(tradeService(), orderRepository,tradeRepository);
+        return new TradeFlux(mapperService, tradeService(), orderRepository,tradeRepository);
     }
 
     @Bean
@@ -97,7 +101,7 @@ public class BaseMock extends BaseTest {
             logger.error("Impossible to instantiate mocked market service");
             return null;
         }
-        return new MarketServiceXChangeImplementation(SERVICE_RATE, mock);
+        return new MarketServiceXChangeImplementation(SERVICE_RATE, mock, mapperService);
     }
 
     @Bean
@@ -110,7 +114,7 @@ public class BaseMock extends BaseTest {
             logger.error("Impossible to instantiate mocked account service");
             return null;
         }
-        return new UserServiceXChangeImplementation(SERVICE_RATE, mock);
+        return new UserServiceXChangeImplementation(SERVICE_RATE, mapperService, mock);
     }
 
     @Bean
@@ -123,7 +127,7 @@ public class BaseMock extends BaseTest {
             logger.error("Impossible to instantiate mocked account service");
             return null;
         }
-        return new TradeServiceXChangeImplementation(SERVICE_RATE, orderRepository, mock);
+        return new TradeServiceXChangeImplementation(SERVICE_RATE, mapperService, orderRepository, mock);
     }
 
     /**

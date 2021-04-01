@@ -10,12 +10,16 @@ import tech.cassandre.trading.bot.dto.util.Currency;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 
+import static org.mapstruct.InjectionStrategy.CONSTRUCTOR;
 import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 
 /**
  * Order mapper.
  */
-@Mapper(uses = {UtilMapper.class, CurrencyMapper.class, TradeMapper.class, StrategyMapper.class}, nullValuePropertyMappingStrategy = IGNORE)
+@Mapper(componentModel = "spring",
+        injectionStrategy = CONSTRUCTOR,
+        uses = {UtilMapper.class, CurrencyMapper.class, CurrencyPairMapper.class, TradeMapper.class, StrategyMapper.class},
+        nullValuePropertyMappingStrategy = IGNORE)
 public interface OrderMapper {
 
     // =================================================================================================================

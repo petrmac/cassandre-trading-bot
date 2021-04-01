@@ -7,12 +7,17 @@ import tech.cassandre.trading.bot.domain.Position;
 import tech.cassandre.trading.bot.dto.position.PositionDTO;
 import tech.cassandre.trading.bot.dto.position.PositionRulesDTO;
 
+import static org.mapstruct.InjectionStrategy.CONSTRUCTOR;
 import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 
 /**
  * Position mapper.
  */
-@Mapper(uses = {CurrencyMapper.class, OrderMapper.class, UtilMapper.class, StrategyMapper.class}, nullValuePropertyMappingStrategy = IGNORE)
+@Mapper(componentModel = "spring",
+        injectionStrategy = CONSTRUCTOR,
+        uses = {CurrencyMapper.class, CurrencyPairMapper.class, CurrencyAmountMapper.class,
+                OrderMapper.class, UtilMapper.class, StrategyMapper.class},
+        nullValuePropertyMappingStrategy = IGNORE)
 public interface PositionMapper {
 
     // =================================================================================================================
@@ -22,10 +27,6 @@ public interface PositionMapper {
     @Mapping(source = "rules.stopLossPercentage", target = "stopLossPercentageRule")
     @Mapping(target = "createdOn", ignore = true)
     @Mapping(target = "updatedOn", ignore = true)
-    @Mapping(source = "amount.currency", target = "amount.currency", qualifiedByName = "mapCurrencyToString")
-    @Mapping(source = "lowestGainPrice.currency", target = "lowestGainPrice.currency", qualifiedByName = "mapCurrencyToString")
-    @Mapping(source = "highestGainPrice.currency", target = "highestGainPrice.currency", qualifiedByName = "mapCurrencyToString")
-    @Mapping(source = "latestGainPrice.currency", target = "latestGainPrice.currency", qualifiedByName = "mapCurrencyToString")
     Position mapToPosition(PositionDTO source);
 
     @Mapping(target = "id", ignore = true)
@@ -35,10 +36,6 @@ public interface PositionMapper {
     @Mapping(target = "createdOn", ignore = true)
     @Mapping(target = "updatedOn", ignore = true)
     @Mapping(target = "strategy", ignore = true)
-    @Mapping(source = "amount.currency", target = "amount.currency", qualifiedByName = "mapCurrencyToString")
-    @Mapping(source = "lowestGainPrice.currency", target = "lowestGainPrice.currency", qualifiedByName = "mapCurrencyToString")
-    @Mapping(source = "highestGainPrice.currency", target = "highestGainPrice.currency", qualifiedByName = "mapCurrencyToString")
-    @Mapping(source = "latestGainPrice.currency", target = "latestGainPrice.currency", qualifiedByName = "mapCurrencyToString")
     void updatePosition(PositionDTO source, @MappingTarget Position target);
 
     // =================================================================================================================

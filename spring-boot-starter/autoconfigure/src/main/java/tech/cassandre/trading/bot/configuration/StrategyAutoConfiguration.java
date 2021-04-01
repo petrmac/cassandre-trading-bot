@@ -1,6 +1,7 @@
 package tech.cassandre.trading.bot.configuration;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.ConnectableFlux;
 import tech.cassandre.trading.bot.batch.AccountFlux;
@@ -27,6 +28,7 @@ import tech.cassandre.trading.bot.service.TradeService;
 import tech.cassandre.trading.bot.service.UserService;
 import tech.cassandre.trading.bot.service.dry.TradeServiceDryModeImplementation;
 import tech.cassandre.trading.bot.service.dry.UserServiceDryModeImplementation;
+import tech.cassandre.trading.bot.service.intern.PositionServiceImplementation;
 import tech.cassandre.trading.bot.strategy.BasicCassandreStrategy;
 import tech.cassandre.trading.bot.strategy.BasicTa4jCassandreStrategy;
 import tech.cassandre.trading.bot.strategy.CassandreStrategy;
@@ -34,6 +36,7 @@ import tech.cassandre.trading.bot.strategy.CassandreStrategyInterface;
 import tech.cassandre.trading.bot.strategy.GenericCassandreStrategy;
 import tech.cassandre.trading.bot.util.base.configuration.BaseConfiguration;
 import tech.cassandre.trading.bot.util.exception.ConfigurationException;
+import tech.cassandre.trading.bot.util.mapper.MapperService;
 import tech.cassandre.trading.bot.util.parameters.ExchangeParameters;
 
 import javax.annotation.PostConstruct;
@@ -63,7 +66,7 @@ public class StrategyAutoConfiguration extends BaseConfiguration {
     private final TradeService tradeService;
 
     /** Position service. */
-    private final PositionService positionService;
+    private PositionService positionService;
 
     /** User service. */
     private final UserService userService;
@@ -115,7 +118,6 @@ public class StrategyAutoConfiguration extends BaseConfiguration {
      * @param newTradeRepository           trade repository
      * @param newPositionRepository        position repository
      * @param newPositionFlux              position flux
-     * @param newPositionService           position service
      */
     @SuppressWarnings("checkstyle:ParameterNumber")
     public StrategyAutoConfiguration(final ApplicationContext newApplicationContext,
@@ -132,7 +134,8 @@ public class StrategyAutoConfiguration extends BaseConfiguration {
                                      final TradeRepository newTradeRepository,
                                      final PositionRepository newPositionRepository,
                                      final PositionFlux newPositionFlux,
-                                     final PositionService newPositionService) {
+                                     final MapperService mapperService) {
+        super(mapperService);
         this.applicationContext = newApplicationContext;
         this.exchangeParameters = newExchangeParameters;
         this.userService = newUserService;
@@ -147,7 +150,6 @@ public class StrategyAutoConfiguration extends BaseConfiguration {
         this.tradeRepository = newTradeRepository;
         this.positionRepository = newPositionRepository;
         this.positionFlux = newPositionFlux;
-        this.positionService = newPositionService;
     }
 
     /**
@@ -212,6 +214,9 @@ public class StrategyAutoConfiguration extends BaseConfiguration {
         strategy.getRequestedCurrencyPairs().forEach(currencyPair -> currencyPairList.add(currencyPair.toString()));
         logger.info("StrategyConfiguration - The strategy requires the following currency pair(s) : {}", currencyPairList);
 
+        // =============================================================================================================
+        // Setting up position service.
+        this.positionService = new PositionServiceImplementation(positionRepository, tradeService, positionFlux, mapperService);
 
         // =============================================================================================================
         // Setting up strategy.
@@ -222,7 +227,7 @@ public class StrategyAutoConfiguration extends BaseConfiguration {
             // Update.
             existingStrategy.setName(cassandreStrategyAnnotation.strategyName());
             strategyRepository.save(existingStrategy);
-            strategy.setStrategyDTO(strategyMapper.mapToStrategyDTO(existingStrategy));
+            strategy.setStrategyDTO(mapperService.getStrategyMapper().mapToStrategyDTO(existingStrategy));
             logger.debug("StrategyConfiguration - strategy updated in database {}", existingStrategy);
         }, () -> {
             // Creation.
@@ -241,13 +246,14 @@ public class StrategyAutoConfiguration extends BaseConfiguration {
             }
             strategyRepository.save(newStrategy);
             logger.debug("StrategyConfiguration - strategy saved in database {}", newStrategy);
-            strategy.setStrategyDTO(strategyMapper.mapToStrategyDTO(newStrategy));
+            strategy.setStrategyDTO(mapperService.getStrategyMapper().mapToStrategyDTO(newStrategy));
         });
 
         // Setting services & repositories.
         strategy.setOrderRepository(orderRepository);
         strategy.setTradeRepository(tradeRepository);
         strategy.setTradeService(tradeService);
+        strategy.setMapperService(mapperService);
         strategy.setPositionService(positionService);
         strategy.setPositionRepository(positionRepository);
 
@@ -272,7 +278,7 @@ public class StrategyAutoConfiguration extends BaseConfiguration {
                 order.get()
                         .getTrades()
                         .stream()
-                        .map(tradeMapper::mapToTradeDTO)
+                        .map(mapperService.getTradeMapper()::mapToTradeDTO)
                         .forEach(tradeDTO -> positionService.tradeUpdate(tradeDTO));
             }
         });
@@ -286,7 +292,7 @@ public class StrategyAutoConfiguration extends BaseConfiguration {
                 order.get()
                         .getTrades()
                         .stream()
-                        .map(tradeMapper::mapToTradeDTO)
+                        .map(mapperService.getTradeMapper()::mapToTradeDTO)
                         .forEach(tradeDTO -> positionService.tradeUpdate(tradeDTO));
             }
         });
@@ -320,4 +326,15 @@ public class StrategyAutoConfiguration extends BaseConfiguration {
             ((UserServiceDryModeImplementation) userService).setDependencies((GenericCassandreStrategy) strategy);
         }
     }
+
+    /**
+     * Getter for positionService.
+     *
+     * @return positionService
+     */
+    @Bean
+    public PositionService getPositionService() {
+        return positionService;
+    }
+
 }

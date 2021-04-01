@@ -2,7 +2,7 @@ package tech.cassandre.trading.bot.util.jpa;
 
 import lombok.Data;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import tech.cassandre.trading.bot.util.java.EqualsBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

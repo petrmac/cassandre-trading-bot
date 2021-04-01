@@ -3,6 +3,7 @@ package tech.cassandre.trading.bot.batch;
 import tech.cassandre.trading.bot.dto.user.AccountDTO;
 import tech.cassandre.trading.bot.service.UserService;
 import tech.cassandre.trading.bot.util.base.batch.BaseExternalFlux;
+import tech.cassandre.trading.bot.util.mapper.*;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -24,9 +25,11 @@ public class AccountFlux extends BaseExternalFlux<AccountDTO> {
     /**
      * Constructor.
      *
+     * @param mapperService the mapper service
      * @param newUserService user service
      */
-    public AccountFlux(final UserService newUserService) {
+    public AccountFlux(final UserService newUserService, final MapperService mapperService) {
+        super(mapperService);
         this.userService = newUserService;
     }
 

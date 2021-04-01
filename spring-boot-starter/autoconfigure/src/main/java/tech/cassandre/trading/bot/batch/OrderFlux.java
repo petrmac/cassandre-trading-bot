@@ -5,6 +5,7 @@ import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.repository.OrderRepository;
 import tech.cassandre.trading.bot.service.TradeService;
 import tech.cassandre.trading.bot.util.base.batch.BaseExternalFlux;
+import tech.cassandre.trading.bot.util.mapper.*;
 
 import java.util.LinkedHashSet;
 import java.util.Optional;
@@ -25,10 +26,14 @@ public class OrderFlux extends BaseExternalFlux<OrderDTO> {
     /**
      * Constructor.
      *
+     * @param mapperService mapper service
      * @param newTradeService    trade service
      * @param newOrderRepository order repository
      */
-    public OrderFlux(final TradeService newTradeService, final OrderRepository newOrderRepository) {
+    public OrderFlux(final MapperService mapperService,
+                     final TradeService newTradeService,
+                     final OrderRepository newOrderRepository) {
+        super(mapperService);
         this.tradeService = newTradeService;
         this.orderRepository = newOrderRepository;
     }
@@ -51,7 +56,7 @@ public class OrderFlux extends BaseExternalFlux<OrderDTO> {
                     }
 
                     // If the local order is already saved in database and this update change the data, it's a change.
-                    if (orderInDatabase.isPresent() && !orderMapper.mapToOrderDTO(orderInDatabase.get()).equals(order)) {
+                    if (orderInDatabase.isPresent() && !mapperService.getOrderMapper().mapToOrderDTO(orderInDatabase.get()).equals(order)) {
                         logger.debug("OrderFlux - Order {} has changed : {}", order.getOrderId(), order);
                         newValues.add(order);
                     }
@@ -68,16 +73,16 @@ public class OrderFlux extends BaseExternalFlux<OrderDTO> {
         orderRepository.findByOrderId(newValue.getOrderId())
                 .ifPresentOrElse(order -> {
                     // Update order.
-                    orderMapper.updateOrder(newValue, order);
+                    mapperService.getOrderMapper().updateOrder(newValue, order);
                     valueToSave.set(order);
                     logger.debug("OrderFlux - Updating order in database {}", order);
                 }, () -> {
                     // Create order.
-                    valueToSave.set(orderMapper.mapToOrder(newValue));
+                    valueToSave.set(mapperService.getOrderMapper().mapToOrder(newValue));
                     logger.debug("OrderFlux - Creating order in database {}", newValue);
                 });
 
-        return Optional.ofNullable(orderMapper.mapToOrderDTO(orderRepository.save(valueToSave.get())));
+        return Optional.ofNullable(mapperService.getOrderMapper().mapToOrderDTO(orderRepository.save(valueToSave.get())));
     }
 
 }

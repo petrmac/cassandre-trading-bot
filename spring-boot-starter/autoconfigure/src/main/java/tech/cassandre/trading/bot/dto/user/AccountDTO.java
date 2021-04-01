@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import tech.cassandre.trading.bot.dto.util.Currency;
-import tech.cassandre.trading.bot.util.java.EqualsBuilder;
 
 import java.util.Map;
 import java.util.Optional;
@@ -44,11 +44,11 @@ public class AccountDTO {
      * @return balance
      */
     public Optional<BalanceDTO> getBalance(final String currencyCode) {
-        Currency currency = Currency.forString(currencyCode);
+        Currency currency = Currency.forValue(currencyCode);
         if (currency == null) {
             return Optional.empty();
         } else {
-            return getBalance(Currency.forString(currencyCode));
+            return getBalance(Currency.forValue(currencyCode));
         }
     }
 

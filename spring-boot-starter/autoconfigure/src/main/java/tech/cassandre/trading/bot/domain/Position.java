@@ -5,7 +5,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import tech.cassandre.trading.bot.dto.position.PositionStatusDTO;
 import tech.cassandre.trading.bot.dto.position.PositionTypeDTO;
 import tech.cassandre.trading.bot.util.base.domain.BaseDomain;
-import tech.cassandre.trading.bot.util.java.EqualsBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import tech.cassandre.trading.bot.util.jpa.CurrencyAmount;
 
 import javax.persistence.AttributeOverride;

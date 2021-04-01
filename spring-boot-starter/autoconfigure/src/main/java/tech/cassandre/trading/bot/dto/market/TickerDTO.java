@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Value;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import tech.cassandre.trading.bot.dto.util.CurrencyPair;
-import tech.cassandre.trading.bot.util.java.EqualsBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;

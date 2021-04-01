@@ -12,6 +12,7 @@ import tech.cassandre.trading.bot.repository.PositionRepository;
 import tech.cassandre.trading.bot.repository.TradeRepository;
 import tech.cassandre.trading.bot.service.PositionService;
 import tech.cassandre.trading.bot.service.TradeService;
+import tech.cassandre.trading.bot.util.mapper.MapperService;
 
 import java.util.Optional;
 import java.util.Set;
@@ -57,6 +58,12 @@ public interface CassandreStrategyInterface {
      * @param newTradeService the tradeService to set
      */
     void setTradeService(TradeService newTradeService);
+
+    /**
+     * Stter for the mapper service
+     * @param mapperService mapper service
+     */
+    void setMapperService(MapperService mapperService);
 
     /**
      * Setter for positionService.

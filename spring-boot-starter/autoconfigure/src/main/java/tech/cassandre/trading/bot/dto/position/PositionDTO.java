@@ -10,11 +10,12 @@ import tech.cassandre.trading.bot.dto.strategy.StrategyDTO;
 import tech.cassandre.trading.bot.dto.trade.OrderDTO;
 import tech.cassandre.trading.bot.dto.trade.TradeDTO;
 import tech.cassandre.trading.bot.dto.util.Currency;
+import tech.cassandre.trading.bot.dto.util.CurrencyAmount;
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.dto.util.GainDTO;
 import tech.cassandre.trading.bot.util.exception.PositionException;
-import tech.cassandre.trading.bot.util.java.EqualsBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -62,7 +63,7 @@ public class PositionDTO {
     private final CurrencyPair currencyPair;
 
     /** Amount that was ordered. */
-    private final CurrencyAmountDTO amount;
+    private final CurrencyAmount amount;
 
     /** Position rules. */
     private final PositionRulesDTO rules;
@@ -126,10 +127,7 @@ public class PositionDTO {
         this.positionId = newId;
         this.strategy = newStrategy;
         this.currencyPair = newCurrencyPair;
-        this.amount = CurrencyAmountDTO.builder()
-                .value(newAmount)
-                .currency(newCurrencyPair.getBaseCurrency())
-                .build();
+        this.amount = CurrencyAmount.forValues(newAmount, newCurrencyPair);
         this.openingOrderId = newOpenOrderId;
         this.rules = newRules;
         this.status = OPENING;

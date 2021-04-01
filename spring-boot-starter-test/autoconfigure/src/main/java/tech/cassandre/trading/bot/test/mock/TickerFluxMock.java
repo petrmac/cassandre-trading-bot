@@ -143,7 +143,7 @@ public class TickerFluxMock {
             final int currencyPairIndexStop = file.getFilename().indexOf("sv") - 2;
             final String currencyPairAsString = file.getFilename().substring(currencyPairIndexStart, currencyPairIndexStop);
             final String[] currencyPairAsSplit = currencyPairAsString.split("-");
-            return CurrencyPair.forValues(Currency.forString(currencyPairAsSplit[0].toUpperCase()), Currency.forString(currencyPairAsSplit[1].toUpperCase()));
+            return CurrencyPair.forValues(Currency.forValue(currencyPairAsSplit[0].toUpperCase()), Currency.forValue(currencyPairAsSplit[1].toUpperCase()));
         } else {
             return null;
         }

@@ -1,9 +1,11 @@
 package tech.cassandre.trading.bot.util.base.batch;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 import reactor.core.scheduler.Schedulers;
-import tech.cassandre.trading.bot.util.base.Base;
+import tech.cassandre.trading.bot.util.mapper.*;
 
 import java.util.Optional;
 
@@ -14,7 +16,12 @@ import static reactor.core.publisher.FluxSink.OverflowStrategy.LATEST;
  *
  * @param <T> flux
  */
-public abstract class BaseFlux<T> extends Base {
+public abstract class BaseFlux<T> {
+
+    /** Logger. */
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
+    protected final MapperService mapperService;
 
     /** Flux. */
     protected final Flux<T> flux;
@@ -25,7 +32,8 @@ public abstract class BaseFlux<T> extends Base {
     /**
      * Constructor.
      */
-    public BaseFlux() {
+    public BaseFlux(MapperService mapperService) {
+        this.mapperService = mapperService;
         Flux<T> fluxTemp = Flux.create(newFluxSink -> this.fluxSink = newFluxSink, getOverflowStrategy());
         flux = fluxTemp.publishOn(Schedulers.boundedElastic());
     }

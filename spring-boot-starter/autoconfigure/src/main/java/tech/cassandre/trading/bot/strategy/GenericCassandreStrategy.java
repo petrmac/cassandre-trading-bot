@@ -1,6 +1,6 @@
 package tech.cassandre.trading.bot.strategy;
 
-import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
 import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.position.PositionCreationResultDTO;
 import tech.cassandre.trading.bot.dto.position.PositionDTO;
@@ -22,6 +22,7 @@ import tech.cassandre.trading.bot.repository.TradeRepository;
 import tech.cassandre.trading.bot.service.PositionService;
 import tech.cassandre.trading.bot.service.TradeService;
 import tech.cassandre.trading.bot.util.mapper.CurrencyMapper;
+import tech.cassandre.trading.bot.util.mapper.MapperService;
 import tech.cassandre.trading.bot.util.mapper.OrderMapper;
 import tech.cassandre.trading.bot.util.mapper.PositionMapper;
 import tech.cassandre.trading.bot.util.mapper.TradeMapper;
@@ -44,17 +45,8 @@ import static tech.cassandre.trading.bot.dto.position.PositionStatusDTO.CLOSED;
 @SuppressWarnings("checkstyle:DesignForExtension")
 public abstract class GenericCassandreStrategy implements CassandreStrategyInterface {
 
-    /** Currency mapper. */
-    protected final CurrencyMapper currencyMapper = Mappers.getMapper(CurrencyMapper.class);
-
-    /** Order mapper. */
-    protected final OrderMapper orderMapper = Mappers.getMapper(OrderMapper.class);
-
-    /** Trade mapper. */
-    protected final TradeMapper tradeMapper = Mappers.getMapper(TradeMapper.class);
-
-    /** Position mapper. */
-    protected final PositionMapper positionMapper = Mappers.getMapper(PositionMapper.class);
+    /** Mapper service. */
+    protected MapperService mapperService;
 
     /** Strategy. */
     private StrategyDTO strategyDTO;
@@ -121,6 +113,10 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
     @Override
     public final void setTradeService(final TradeService newTradeService) {
         this.tradeService = newTradeService;
+    }
+
+    public void setMapperService(final MapperService mapperService) {
+        this.mapperService = mapperService;
     }
 
     @Override
@@ -291,7 +287,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
     public final Map<String, OrderDTO> getOrders() {
         return orderRepository.findByOrderByTimestampAsc()
                 .stream()
-                .map(orderMapper::mapToOrderDTO)
+                .map(mapperService.getOrderMapper()::mapToOrderDTO)
                 .collect(Collectors.toMap(OrderDTO::getOrderId, orderDTO -> orderDTO));
     }
 
@@ -302,7 +298,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @return order
      */
     public final Optional<OrderDTO> getOrderByOrderId(final String orderId) {
-        return orderRepository.findByOrderId(orderId).map(orderMapper::mapToOrderDTO);
+        return orderRepository.findByOrderId(orderId).map(mapperService.getOrderMapper()::mapToOrderDTO);
     }
 
     // =================================================================================================================
@@ -316,7 +312,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
     public final Map<String, TradeDTO> getTrades() {
         return tradeRepository.findByOrderByTimestampAsc()
                 .stream()
-                .map(tradeMapper::mapToTradeDTO)
+                .map(mapperService.getTradeMapper()::mapToTradeDTO)
                 .collect(Collectors.toMap(TradeDTO::getTradeId, tradeDTO -> tradeDTO));
     }
 
@@ -327,7 +323,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @return trade
      */
     public final Optional<TradeDTO> getTradeByTradeId(final String tradeId) {
-        return tradeRepository.findByTradeId(tradeId).map(tradeMapper::mapToTradeDTO);
+        return tradeRepository.findByTradeId(tradeId).map(mapperService.getTradeMapper()::mapToTradeDTO);
     }
 
     // =================================================================================================================
@@ -341,7 +337,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
     public final Map<Long, PositionDTO> getPositions() {
         return positionRepository.findByOrderById()
                 .stream()
-                .map(positionMapper::mapToPositionDTO)
+                .map(mapperService.getPositionMapper()::mapToPositionDTO)
                 .collect(Collectors.toMap(PositionDTO::getId, positionDTO -> positionDTO));
     }
 
@@ -352,7 +348,7 @@ public abstract class GenericCassandreStrategy implements CassandreStrategyInter
      * @return position
      */
     public final Optional<PositionDTO> getPositionByPositionId(final long positionId) {
-        return positionRepository.findByPositionId(positionId).map(positionMapper::mapToPositionDTO);
+        return positionRepository.findByPositionId(positionId).map(mapperService.getPositionMapper()::mapToPositionDTO);
     }
 
     /**

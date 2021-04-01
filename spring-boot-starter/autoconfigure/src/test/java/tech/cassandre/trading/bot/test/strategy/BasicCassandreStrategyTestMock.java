@@ -18,9 +18,7 @@ import tech.cassandre.trading.bot.dto.user.AccountDTO;
 import tech.cassandre.trading.bot.dto.user.BalanceDTO;
 import tech.cassandre.trading.bot.dto.user.UserDTO;
 import tech.cassandre.trading.bot.dto.util.Currency;
-import tech.cassandre.trading.bot.dto.util.CurrencyDTO;
 import tech.cassandre.trading.bot.dto.util.CurrencyPair;
-import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO;
 import tech.cassandre.trading.bot.repository.OrderRepository;
 import tech.cassandre.trading.bot.repository.PositionRepository;
 import tech.cassandre.trading.bot.repository.TradeRepository;
@@ -29,6 +27,7 @@ import tech.cassandre.trading.bot.service.PositionService;
 import tech.cassandre.trading.bot.service.TradeService;
 import tech.cassandre.trading.bot.service.UserService;
 import tech.cassandre.trading.bot.test.util.junit.BaseTest;
+import tech.cassandre.trading.bot.util.mapper.MapperService;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
@@ -42,9 +41,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static tech.cassandre.trading.bot.dto.position.PositionTypeDTO.LONG;
 import static tech.cassandre.trading.bot.dto.trade.OrderTypeDTO.BID;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.BTC;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.ETH;
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.USDT;
+import static tech.cassandre.trading.bot.dto.util.Currency.BTC;
+import static tech.cassandre.trading.bot.dto.util.Currency.ETH;
+import static tech.cassandre.trading.bot.dto.util.Currency.USDT;
 
 @SuppressWarnings("unchecked")
 @TestConfiguration
@@ -61,34 +60,37 @@ public class BasicCassandreStrategyTestMock extends BaseTest {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    protected MapperService mapperService;
+
     @Bean
     @Primary
     public TickerFlux tickerFlux() {
-        return new TickerFlux(marketService());
+        return new TickerFlux(mapperService, marketService());
     }
 
     @Bean
     @Primary
     public AccountFlux accountFlux() {
-        return new AccountFlux(userService());
+        return new AccountFlux(userService(), mapperService);
     }
 
     @Bean
     @Primary
     public OrderFlux orderFlux() {
-        return new OrderFlux(tradeService(), orderRepository);
+        return new OrderFlux(mapperService, tradeService(), orderRepository);
     }
 
     @Bean
     @Primary
     public TradeFlux tradeFlux() {
-        return new TradeFlux(tradeService(), orderRepository, tradeRepository);
+        return new TradeFlux(mapperService, tradeService(), orderRepository, tradeRepository);
     }
 
     @Bean
     @Primary
     public PositionFlux positionFlux() {
-        return new PositionFlux(positionRepository, orderRepository);
+        return new PositionFlux(mapperService, positionRepository, orderRepository);
     }
 
     @SuppressWarnings("unchecked")

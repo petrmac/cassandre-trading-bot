@@ -5,6 +5,7 @@ import tech.cassandre.trading.bot.dto.market.Ticker;
 import tech.cassandre.trading.bot.dto.util.CurrencyPair;
 import tech.cassandre.trading.bot.service.MarketService;
 import tech.cassandre.trading.bot.util.base.batch.BaseExternalFlux;
+import tech.cassandre.trading.bot.util.mapper.*;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -30,9 +31,12 @@ public class TickerFlux extends BaseExternalFlux<Ticker> {
     /**
      * Constructor.
      *
-     * @param newMarketService market service.
+     * @param mapperService the mapper service
+     * @param newMarketService the market service
      */
-    public TickerFlux(final MarketService newMarketService) {
+    public TickerFlux(final MapperService mapperService,
+                      final MarketService newMarketService) {
+        super(mapperService);
         this.marketService = newMarketService;
     }
 

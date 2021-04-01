@@ -6,6 +6,8 @@ import tech.cassandre.trading.bot.dto.position.PositionStatusDTO
 import tech.cassandre.trading.bot.dto.trade.OrderDTO
 import tech.cassandre.trading.bot.dto.util.CurrencyAmountDTO
 import tech.cassandre.trading.bot.dto.util.CurrencyDTO
+import tech.cassandre.trading.bot.dto.util.CurrencyPair
+import tech.cassandre.trading.bot.dto.util.Currency
 import tech.cassandre.trading.bot.dto.util.CurrencyPairDTO
 
 class PositionDTOSpec extends Specification {
@@ -16,8 +18,8 @@ class PositionDTOSpec extends Specification {
     def setup() {
         order = GroovyMock(OrderDTO)
         position = new PositionDTO.PositionDTOBuilder()
-        .amount(new CurrencyAmountDTO(100 as BigDecimal, new CurrencyDTO("USD")))
-        .currencyPair(new CurrencyPairDTO("BTC/USD"))
+        .amount(CurrencyAmountDTO.forValues(100 as BigDecimal, Currency.forValue("USD")))
+        .currencyPair(CurrencyPair.forValue("BTC/USD"))
         .status(PositionStatusDTO.OPENED)
         .openingOrder(order)
         .openingOrderId('openingId')

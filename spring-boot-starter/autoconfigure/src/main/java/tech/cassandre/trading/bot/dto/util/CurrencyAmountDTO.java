@@ -2,12 +2,12 @@ package tech.cassandre.trading.bot.dto.util;
 
 import lombok.Builder;
 import lombok.Value;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import tech.cassandre.trading.bot.util.java.EqualsBuilder;
 
 import java.math.BigDecimal;
 
-import static tech.cassandre.trading.bot.dto.util.CurrencyDTO.BTC;
+import static tech.cassandre.trading.bot.dto.util.Currency.BTC;
 
 /**
  * Currency amount (amount value + currency).
